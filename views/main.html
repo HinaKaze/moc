@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="cache-control" content="no-store">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+    <title>MOC Park System</title>
+    <!-- css files -->
+    <link rel="stylesheet" href="static/css/vendor/bootstrap.min.css">
+    <!-- js files -->
+    <script src="static/js/vendor/jquery-1.11.3.min.js"></script>
+    <script src="static/js/vendor/bootstrap.min.js"></script>
+    <!--<script src="static/js/vendor/phaser.min.js"></script>-->
+    <!--<script src="static/js/noro.js"></script>
+    <script src="static/js/main.js"></script>-->
+
+    <script type="text/javascript">
+    $(document).ready(function () {
+        $.get("/dashboard/workbench", function (data, status) {
+            $("#main-content").html(data);
+        })
+    });
+</script>
+</head>
+
+<body>
+    <img class="main-background" id="main-background" src="/static/img/chat-room-background.png"></img>
+    <div class="main-header" id="main-header">
+        <!-- <div class="main-header-logo"></div> -->
+    </div>
+    <div class="main-content">
+        
+    </div>
+    <div id="main-footer"></div>
+</body>
+
+</html>

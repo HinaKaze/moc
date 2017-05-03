@@ -1,0 +1,100 @@
+body {
+    /*background-color: #f7f7f8;*/
+    /*background-color: #eee;*/
+    font-family: "Open Sans","Microsoft YaHei","Hiragino Sans GB","Hiragino Sans GB W3","微软雅黑","Helvetica Neue",Arial,sans-serif ;
+}
+
+.main-header {
+    background-image: url("/static/img/title-background.jpg");
+    background-position: center;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+    width: 100%;
+    height: 170px;
+    background-repeat: repeat-x;
+    transition:height;
+}
+
+.main-header-logo {
+    background-image: url("/static/img/logo.png");
+    background-size: 150px 150px;
+    margin-left: auto;
+    margin-right: auto;
+    width: 150px;
+    height: 150px;
+    vertical-align: center;
+}
+
+.main-background {
+    position: fixed;
+    background: url("/static/img/chat-room-background.png") no-repeat center center fixed;
+    background-size: cover;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    height: 100%;
+    width: 100%;
+    z-index: -999;
+}
+
+/*.blur{
+    -moz-filter: blur(2px);
+    -webkit-filter: blur(2px);
+    -o-filter: blur(2px);
+    -ms-filter: blur(2px);
+    filter: blur(2px);
+}*/
+
+/*musubi*/
+
+.musubi {
+    position: fixed;
+    right: .4rem;
+    top: 0;
+    width: .3rem;
+    z-index: -1;
+}
+
+.musubi-line {
+    height: 3rem;
+    margin: 0 .1rem;
+    transition: height 1s;
+    background-color: #333;
+    box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+    transition: height 1s;
+
+}
+
+.musubi-omamori {
+    height: .6rem;
+    background-color: #333;
+    color: #fff;
+    text-align: center;
+    font-size: .2rem;
+    font-weight: bold;
+    box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+   
+}
+
+.musubi-omamori:hover {
+    cursor: pointer;
+    /*animation: omamori 3s infinite;
+    -moz-animation: omamori 3s infinite;
+    -webkit-animation: omamori 3s infinite;
+    -o-animation: omamori 3s infinite;*/
+}
+
+/*@-webkit-keyframes omamori 
+{
+0%   {transform:rotateY(0deg);}
+25%  {transform:rotateY(45deg);}
+50%  {transform:rotateY(0deg);}
+75% {transform:rotateY(-45deg);}
+100%  {transform:rotateY(0deg);}
+}*/
+
+/*@-webkit-keyframes omamori 
+{
+0%   {transform:rotateY(0deg);}
+50%  {transform:rotateY(180deg);}
+100%  {transform:rotateY(360deg);}
+}*/
