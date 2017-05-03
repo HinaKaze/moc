@@ -23,17 +23,20 @@ func (c *WorkbenchController) Get() {
 	reserves := mreserve.GetTodayReserves()
 
 	workbenchThemes := make([]*WorkbenchTheme, 0)
-	for _, t := range themes {
+	for i := range themes {
+		t := themes[i]
 		wtheme := new(WorkbenchTheme)
 		wtheme.Theme = &t
-		for _, r := range runningRecords {
+		for j := range runningRecords {
+			r := runningRecords[j]
 			if r.Reserve.Theme.Id == wtheme.Theme.Id {
 				wtheme.Running = &r
 				break
 			}
 		}
 		wtheme.Reserves = make([]*mreserve.Theme, 0)
-		for _, r := range reserves {
+		for j := range reserves {
+			r := reserves[j]
 			if r.Theme.Id == wtheme.Theme.Id {
 				wtheme.Reserves = append(wtheme.Reserves, &r)
 			}

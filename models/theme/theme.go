@@ -6,18 +6,6 @@ import (
 	"github.com/astaxie/beego/orm"
 )
 
-// func init(){
-// 	fakeTheme1 := new(Theme)
-// 	fakeTheme1.Title = "星际穿越"
-// 	fakeTheme1.Desc = "一次去了就回不来的星际旅行"
-// 	fakeTheme1.MinMember = 2
-// 	fakeTheme1.MaxMember = 6
-// 	fakeTheme1.PlayDuration = 3600
-// 	fakeTheme1.Available = true
-
-// 	InsertTheme(fakeTheme1)
-// }
-
 type Theme struct {
 	Id           int64
 	Title        string //主题名称
@@ -54,6 +42,6 @@ func GetAvailableThemes() []Theme {
 	if err != nil {
 		panic(err)
 	}
-	log.Printf("GetThemes returned rows : %d ", num)
+	log.Printf("GetAvailableThemes returned rows : %d ", num)
 	return themes
 }

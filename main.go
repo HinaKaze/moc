@@ -37,8 +37,8 @@ func main() {
 	orm.DefaultTimeLoc = time.Local
 
 	orm.RegisterModel(new(theme.Theme), new(reserve.Theme), new(record.Theme))
-	orm.RunSyncdb("default", false, true)
+	//orm.RunSyncdb("default", false, true)
 
-	beego.BConfig.WebConfig.Session.SessionProvider = "memory"
+	//beego.BConfig.WebConfig.Session.SessionProvider = "memory"
 	beego.Run()
 }

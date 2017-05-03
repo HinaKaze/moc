@@ -4,37 +4,15 @@ import (
 	"fmt"
 	"testing"
 
+	"time"
+
 	"github.com/astaxie/beego/orm"
 	"github.com/hinakaze/iniparser"
-	"github.com/hinakaze/moc/models/user"
+	"github.com/hinakaze/moc/models/record"
+	"github.com/hinakaze/moc/models/reserve"
+	"github.com/hinakaze/moc/models/theme"
 	_ "github.com/lib/pq"
 )
-
-type TUser struct {
-	Id      int
-	Name    string
-	Profile *TProfile `orm:"rel(one)"`      // OneToOne relation
-	Post    []*TPost  `orm:"reverse(many)"` // 设置一对多的反向关系
-}
-
-type TProfile struct {
-	Id   int
-	Age  int16
-	User *TUser `orm:"reverse(one)"` // 设置一对一反向关系(可选)
-}
-
-type TPost struct {
-	Id    int
-	Title string
-	User  *TUser  `orm:"rel(fk)"` //设置一对多关系
-	Tags  []*TTag `orm:"rel(m2m)"`
-}
-
-type TTag struct {
-	Id    int
-	Name  string
-	Posts []*TPost `orm:"reverse(many)"`
-}
 
 func TestMain(m *testing.M) {
 	fmt.Println("Start beego orm test")
@@ -53,49 +31,49 @@ func TestMain(m *testing.M) {
 	}
 	orm.Debug = true
 	orm.RegisterDataBase("default", driverName, dataSource)
-	orm.RegisterModel(new(TUser), new(TProfile), new(TPost), new(TTag))
-	orm.RegisterModel(new(user.Show), new(user.User), new(user.Friendship))
-	orm.RunSyncdb("default", false, true)
+	orm.DefaultTimeLoc = time.Local
+
 	m.Run()
 }
 
-//func TestInsert(t *testing.T) {
-//	o := orm.NewOrm()
-//	p := TProfile{Age: 35}
-//	u := TUser{Name: "noro", Profile: &p}
-//	p1 := TPost{Title: "p1", User: &u}
-//	p2 := TPost{Title: "p2", User: &u}
-
-//	pId, _ := o.Insert(&p)
-//	t.Log(pId, p.Id)
-//	uId, _ := o.Insert(&u)
-//	t.Log(uId, u.Id)
-//	o.Insert(&p1)
-//	o.Insert(&p2)
-//}
-
-//func TestRead(t *testing.T) {
-//	o := orm.NewOrm()
-//	u := TUser{Id: 4}
-//	o.Read(&u)
-
-//	o.LoadRelated(&u, "Post")
-//	o.Read(u.Profile)
-//	t.Log(u)
-//	t.Log(u.Post[0].Title)
-//	t.Log(u.Profile)
-//}
-
-func TestInjectUserShow(t *testing.T) {
-	//	o := orm.NewOrm()
-	fakeShow := &user.Show{User: &user.User{Id: 3}, Body: 1, Hair: 1, Emotion: 1, Clothes: 1, Trousers: 1, Shoes: 1}
-	user.SaveShow(fakeShow)
+func TestCreateModels(t *testing.T) {
+	orm.RegisterModel(new(theme.Theme), new(reserve.Theme), new(record.Theme))
+	orm.RunSyncdb("default", false, true)
 }
 
-//func TestRead2(t *testing.T) {
-//	o := orm.NewOrm()
-//	p := TProfile{}
-//	o.QueryTable("t_profile").Filter("User__Id", 4).RelatedSel().One(&p)
-//	t.Log(p)
-//	t.Log(p.User)
-//}
+func TestInsertThemeData(t *testing.T) {
+	fakeTheme1 := new(theme.Theme)
+	fakeTheme1.Title = "星际穿越"
+	fakeTheme1.Desc = "一次去了就回不来的星际旅行"
+	fakeTheme1.MinMember = 2
+	fakeTheme1.MaxMember = 6
+	fakeTheme1.PlayDuration = 3600
+	fakeTheme1.Available = true
+
+	fakeTheme2 := new(theme.Theme)
+	fakeTheme2.Title = "电锯惊魂2"
+	fakeTheme2.Desc = "也就少条腿什么的"
+	fakeTheme2.MinMember = 4
+	fakeTheme2.MaxMember = 10
+	fakeTheme2.PlayDuration = 3600
+	fakeTheme2.Available = true
+
+	theme.InsertTheme(fakeTheme1)
+	theme.InsertTheme(fakeTheme2)
+}
+
+func TestInsertReserveData(t *testing.T) {
+	now := time.Now()
+	themes := theme.GetAvailableThemes()
+	for _, t := range themes {
+		for i := 10; i <= 20; i++ {
+			fakeReserve := new(reserve.Theme)
+			fakeReserve.Theme = &t
+			fakeReserve.TeamName = "紫辰战队"
+			fakeReserve.MemberCount = i - 8
+			fakeReserve.PhoneNumber = "123456789"
+			fakeReserve.BeginTime = time.Date(now.Year(), now.Month(), now.Day(), i, 10, 0, 0, time.Local)
+			reserve.InsertTheme(fakeReserve)
+		}
+	}
+}

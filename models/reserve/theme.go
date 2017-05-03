@@ -21,6 +21,15 @@ func (t *Theme) TableName() string {
 	return "reserve_theme"
 }
 
+func InsertTheme(t *Theme) *Theme {
+	var err error
+	t.Id, err = orm.NewOrm().Insert(t)
+	if err != nil {
+		panic(err)
+	}
+	return t
+}
+
 func GetTodayReserves() []Theme {
 	themes := make([]Theme, 0)
 	cond := orm.NewCondition()
