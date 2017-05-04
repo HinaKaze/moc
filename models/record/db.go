@@ -42,6 +42,7 @@ func GetThemesByStatus(status ThemeStatus) []Theme {
 	if err != nil {
 		panic(err)
 	}
+
 	log.Printf("GetRecordsByStatus returned rows : %d ", num)
 	return themes
 }

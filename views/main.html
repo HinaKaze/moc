@@ -14,16 +14,17 @@
     <script src="static/js/vendor/jquery-1.11.3.min.js"></script>
     <script src="static/js/vendor/bootstrap.min.js"></script>
     <script src="https://unpkg.com/vue/dist/vue.js"></script>
-    
+
     <script src="static/js/moc.js"></script>
 
     <script type="text/javascript">
-    $(document).ready(function () {
-        $.get("/dashboard/workbench", function (data, status) {
-            $("#main-content").html(data);
-        })
-    });
-</script>
+        $(document).ready(function () {
+            $.get("/dashboard/workbench", function (data, status) {
+                $("#main-content").html(data);
+            })
+        });
+
+    </script>
 </head>
 
 <body>
@@ -33,7 +34,7 @@
         <h1>MOC Park Dashboard</h1>
     </div>
     <div class="main-content" id="main-content">
-        
+
     </div>
     <div id="main-footer"></div>
 </body>

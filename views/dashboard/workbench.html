@@ -3,7 +3,17 @@ var workbench = new Vue({
     delimiters: ['${', '}'],
     el: "#dashboard-workbench",
     data: {
-        themes: {{.Themes}}
+        themes: {{.Themes }}
+    },
+    methods:{
+        start : function(event){
+            console.log(event)
+            var reserveThemeId = event.target.parentNode.attributes["reserve-theme-id"].nodeValue
+            console.log(reserveThemeId)
+            $.get("/reserve/theme/"+reserveThemeId+"/start?pay_type=meituan&pay_price=108",function(data,status){
+
+            })
+        }
     }
 })
 
@@ -43,15 +53,16 @@ var workbench = new Vue({
 // }
 </script>
 <div class="dashboard-workbench" id="dashboard-workbench">
-    <div class="dashboard-workbench-theme" v-for="theme of themes">
+    <div class="dashboard-workbench-theme" v-for="theme of themes" v-bind:theme-id="theme.Id" >
         <div class="dashboard-workbench-theme-desc">
             <h3>Theme</h3>
             <div>Title : ${ theme.Theme.Title } </div>
             <div>Desc : ${ theme.Theme.Desc } </div>
             <div>MinMember : ${ theme.Theme.MinMember } </div>
             <div>MaxMember : ${ theme.Theme.MaxMember } </div>
+            
         </div>
-        <div class="dashboard-workbench-theme-current" v-if="theme.Running">
+        <div class="dashboard-workbench-theme-current" v-bind:record-theme-id="theme.Running.Id" v-if="theme.Running">
             <h3>Playing</h3>
             <div>PayType : ${ theme.Running.PayType } </div>
             <div>PayPrice : ${ theme.Running.PayPrice } </div>
@@ -66,12 +77,13 @@ var workbench = new Vue({
             <div>StartTime : NULL </div>
         </div>
         <div class="dashboard-workbench-theme-reserves" v-if="theme.Reserves">
-            <div class="dashboard-workbench-theme-reserve" v-for="reserve of theme.Reserves">
+            <div class="dashboard-workbench-theme-reserve" v-for="reserve of theme.Reserves" v-bind:reserve-theme-id="reserve.Id"  >
                 <h3>Reserved</h3>
                 <div>TeamName : ${ reserve.TeamName } </div>
                 <div>BeginTime : ${ reserve.BeginTime } </div>
                 <div>MemberCount : ${ reserve.MemberCount } </div>
                 <div>PhoneNumber : ${ reserve.PhoneNumber } </div>
+                <button v-on:click="start"> start </button>
             </div>
         </div>
     </div>
