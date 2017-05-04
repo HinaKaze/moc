@@ -14,7 +14,7 @@ type Theme struct {
 
 	RunningFlag  bool      //是否正在进行
 	PayType      string    //支付类型
-	PayNumber    float64   //支付总金额
+	PayPrice     float64   //支付总金额
 	TipUsed      int       //使用提示数
 	CompleteFlag bool      //是否破关
 	TimeRecords  int       // seconds 破关记录

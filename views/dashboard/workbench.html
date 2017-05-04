@@ -1,42 +1,80 @@
 <script type="text/javascript">
-    var themes = {{.Themes }}
-    for (t of themes) {
-        var themeHTML = '<div class="dashboard-workbench-theme" id="dashboard-workbench-theme' + t.Theme.Id + '"></div>'
-        $("#dashboard-workbench").append(themeHTML)
-        var themeDescHTML = '<div class="dashboard-workbench-theme-desc">' +
-            '<div>Title : ' + t.Theme.Title + '</div>' +
-            '<div>Desc : ' + t.Theme.Desc + '</div>' +
-            '<div>MinMember : ' + t.Theme.MinMember + '</div>' +
-            '<div>MaxMember : ' + t.Theme.MaxMember + '</div>' +
-            '</div>';
-        $("#dashboard-workbench-theme" + t.Theme.Id).append(themeDescHTML);
-
-        if (t.Running != null) {
-            var themeCurrentHTML = '<div class="dashboard-workbench-theme-current">' +
-                '<div>PayType : ' + t.Running.PayType + '</div>' +
-                '<div>PayNumber : ' + t.Running.PayNumber + '</div>' +
-                '<div>TipUsed : ' + t.Running.TipUsed + '</div>' +
-                '<div>StartTime : ' + r.Running.CreateTime + '</div>' +
-                '</div>';
-            $("#dashboard-workbench-theme" + t.Theme.Id).append(themeCurrentHTML);
-        } else {
-            var themeCurrentHTML = '<div class="dashboard-workbench-theme-current">null</div>';
-            $("#dashboard-workbench-theme" + t.Theme.Id).append(themeCurrentHTML);
-        }
-
-        for (r of t.Reserves) {
-            var themeReserveHTML = '<div class="dashboard-workbench-theme-reserved">' +
-                '<div>TeamName : ' + r.TeamName + '</div>' +
-                '<div>BeginTime : ' + moc.getFormatTime(r.BeginTime) + '</div>' +
-                '<div>MemberCount : ' + r.MemberCount + '</div>' +
-                '<div>Phonenumber : ' + r.PhoneNumber + '</div>' +
-                '</div>';
-            $("#dashboard-workbench-theme" + t.Theme.Id).append(themeReserveHTML);
-        }
+var workbench = new Vue({
+    delimiters: ['${', '}'],
+    el: "#dashboard-workbench",
+    data: {
+        themes: {{.Themes}}
     }
+})
 
+// for (t of themes) {
+//     var themeHTML = '<div class="dashboard-workbench-theme" id="dashboard-workbench-theme' + t.Theme.Id + '"></div>'
+//     $("#dashboard-workbench").append(themeHTML)
+//     var themeDescHTML = '<div class="dashboard-workbench-theme-desc">' +
+//         '<div>Title : ' + t.Theme.Title + '</div>' +
+//         '<div>Desc : ' + t.Theme.Desc + '</div>' +
+//         '<div>MinMember : ' + t.Theme.MinMember + '</div>' +
+//         '<div>MaxMember : ' + t.Theme.MaxMember + '</div>' +
+//         '</div>';
+//     $("#dashboard-workbench-theme" + t.Theme.Id).append(themeDescHTML);
+
+//     if (t.Running != null) {
+//         var themeCurrentHTML = '<div class="dashboard-workbench-theme-current">' +
+//             '<div>PayType : ' + t.Running.PayType + '</div>' +
+//             '<div>PayNumber : ' + t.Running.PayNumber + '</div>' +
+//             '<div>TipUsed : ' + t.Running.TipUsed + '</div>' +
+//             '<div>StartTime : ' + r.Running.CreateTime + '</div>' +
+//             '</div>';
+//         $("#dashboard-workbench-theme" + t.Theme.Id).append(themeCurrentHTML);
+//     } else {
+//         var themeCurrentHTML = '<div class="dashboard-workbench-theme-current">null</div>';
+//         $("#dashboard-workbench-theme" + t.Theme.Id).append(themeCurrentHTML);
+//     }
+
+//     for (r of t.Reserves) {
+//         var themeReserveHTML = '<div class="dashboard-workbench-theme-reserved">' +
+//             '<div>TeamName : ' + r.TeamName + '</div>' +
+//             '<div>BeginTime : ' + moc.getFormatTime(r.BeginTime) + '</div>' +
+//             '<div>MemberCount : ' + r.MemberCount + '</div>' +
+//             '<div>Phonenumber : ' + r.PhoneNumber + '</div>' +
+//             '</div>';
+//         $("#dashboard-workbench-theme" + t.Theme.Id).append(themeReserveHTML);
+//     }
+// }
 </script>
 <div class="dashboard-workbench" id="dashboard-workbench">
+    <div class="dashboard-workbench-theme" v-for="theme of themes">
+        <div class="dashboard-workbench-theme-desc">
+            <h3>Theme</h3>
+            <div>Title : ${ theme.Theme.Title } </div>
+            <div>Desc : ${ theme.Theme.Desc } </div>
+            <div>MinMember : ${ theme.Theme.MinMember } </div>
+            <div>MaxMember : ${ theme.Theme.MaxMember } </div>
+        </div>
+        <div class="dashboard-workbench-theme-current" v-if="theme.Running">
+            <h3>Playing</h3>
+            <div>PayType : ${ theme.Running.PayType } </div>
+            <div>PayPrice : ${ theme.Running.PayPrice } </div>
+            <div>TipUsed : ${ theme.Running.TipUsed } </div>
+            <div>StartTime : ${ theme.Running.CreateTime } </div>
+        </div>
+        <div class="dashboard-workbench-theme-current" v-else>
+            <h3>Playing</h3>
+            <div>PayType : NULL </div>
+            <div>PayPrice : NULL </div>
+            <div>TipUsed : NULL </div>
+            <div>StartTime : NULL </div>
+        </div>
+        <div class="dashboard-workbench-theme-reserves" v-if="theme.Reserves">
+            <div class="dashboard-workbench-theme-reserve" v-for="reserve of theme.Reserves">
+                <h3>Reserved</h3>
+                <div>TeamName : ${ reserve.TeamName } </div>
+                <div>BeginTime : ${ reserve.BeginTime } </div>
+                <div>MemberCount : ${ reserve.MemberCount } </div>
+                <div>PhoneNumber : ${ reserve.PhoneNumber } </div>
+            </div>
+        </div>
+    </div>
     <!--<div class="dashboard-workbench-theme">
         <div class="dashboard-workbench-theme-desc"></div>
         <div class="dashboard-workbench-theme-current">
