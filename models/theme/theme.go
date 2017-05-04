@@ -1,9 +1,12 @@
 package theme
 
-import (
-	"log"
+type ThemeStatus byte
 
-	"github.com/astaxie/beego/orm"
+const (
+	ThemeStatusPending    ThemeStatus = iota //正在准备，仅供预览
+	ThemeStatusOpening                       //开放中
+	ThemeStatusDeprecated                    //曾经存在过，如今弃用
+	ThemeStatusDeleted                       //手动删除
 )
 
 type Theme struct {
@@ -13,35 +16,9 @@ type Theme struct {
 	MinMember    int    //最小参与人数
 	MaxMember    int    //最大参与人数
 	PlayDuration int    //规定游玩时长 seconds
-	Available    bool   //当前是否有效
+	Status       ThemeStatus
 }
 
 func (t *Theme) TableName() string {
 	return "theme"
-}
-
-func InsertTheme(t *Theme) *Theme {
-	var err error
-	t.Id, err = orm.NewOrm().Insert(t)
-	if err != nil {
-		panic(err)
-	}
-	return t
-}
-
-func UpdateTheme(t *Theme) {
-	_, err := orm.NewOrm().Update(t)
-	if err != nil {
-		panic(err)
-	}
-}
-
-func GetAvailableThemes() []Theme {
-	themes := make([]Theme, 0)
-	num, err := orm.NewOrm().QueryTable("theme").Filter("available", true).All(&themes)
-	if err != nil {
-		panic(err)
-	}
-	log.Printf("GetAvailableThemes returned rows : %d ", num)
-	return themes
 }

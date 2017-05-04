@@ -48,7 +48,7 @@ func TestInsertThemeData(t *testing.T) {
 	fakeTheme1.MinMember = 2
 	fakeTheme1.MaxMember = 6
 	fakeTheme1.PlayDuration = 3600
-	fakeTheme1.Available = true
+	fakeTheme1.Status = theme.ThemeStatusOpening
 
 	fakeTheme2 := new(theme.Theme)
 	fakeTheme2.Title = "电锯惊魂2"
@@ -56,7 +56,7 @@ func TestInsertThemeData(t *testing.T) {
 	fakeTheme2.MinMember = 4
 	fakeTheme2.MaxMember = 10
 	fakeTheme2.PlayDuration = 3600
-	fakeTheme2.Available = true
+	fakeTheme2.Status = theme.ThemeStatusOpening
 
 	theme.InsertTheme(fakeTheme1)
 	theme.InsertTheme(fakeTheme2)
@@ -64,7 +64,7 @@ func TestInsertThemeData(t *testing.T) {
 
 func TestInsertReserveData(t *testing.T) {
 	now := time.Now()
-	themes := theme.GetAvailableThemes()
+	themes := theme.GetThemesByStatus(theme.ThemeStatusOpening)
 	for _, t := range themes {
 		for i := 10; i <= 20; i++ {
 			fakeReserve := new(reserve.Theme)
@@ -73,6 +73,7 @@ func TestInsertReserveData(t *testing.T) {
 			fakeReserve.MemberCount = i - 8
 			fakeReserve.PhoneNumber = "123456789"
 			fakeReserve.BeginTime = time.Date(now.Year(), now.Month(), now.Day(), i, 10, 0, 0, time.Local)
+			fakeReserve.Status = reserve.ThemeStatusWaiting
 			reserve.InsertTheme(fakeReserve)
 		}
 	}

@@ -18,25 +18,27 @@ type WorkbenchTheme struct {
 }
 
 func (c *WorkbenchController) Get() {
-	themes := mtheme.GetAvailableThemes()
-	runningRecords := mrecord.GetRunningRecords()
-	reserves := mreserve.GetTodayReserves()
+	openingThemes := mtheme.GetThemesByStatus(mtheme.ThemeStatusOpening)
+	playingRecordThemes := mrecord.GetThemesByStatus(mrecord.ThemeStatusPlaying)
+
+	//TODO reserve maybe filtered by time
+	waitingReserveThemes := mreserve.GetThemesByStatus(mreserve.ThemeStatusWaiting)
 
 	workbenchThemes := make([]*WorkbenchTheme, 0)
-	for i := range themes {
-		t := themes[i]
+	for i := range openingThemes {
+		t := openingThemes[i]
 		wtheme := new(WorkbenchTheme)
 		wtheme.Theme = &t
-		for j := range runningRecords {
-			r := runningRecords[j]
+		for j := range playingRecordThemes {
+			r := playingRecordThemes[j]
 			if r.Reserve.Theme.Id == wtheme.Theme.Id {
 				wtheme.Running = &r
 				break
 			}
 		}
 		wtheme.Reserves = make([]*mreserve.Theme, 0)
-		for j := range reserves {
-			r := reserves[j]
+		for j := range waitingReserveThemes {
+			r := waitingReserveThemes[j]
 			if r.Theme.Id == wtheme.Theme.Id {
 				wtheme.Reserves = append(wtheme.Reserves, &r)
 			}
