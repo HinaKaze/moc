@@ -1,7 +1,10 @@
 package record
 
 import (
+	"log"
 	"strconv"
+
+	"runtime/debug"
 
 	"github.com/astaxie/beego"
 	"github.com/hinakaze/moc/models/record"
@@ -11,7 +14,8 @@ type ThemeController struct {
 	beego.Controller
 }
 
-func (t *ThemeController) Finish() {
+func (t *ThemeController) DoFinish() {
+	log.Printf("%s", debug.Stack())
 	recordThemeIdStr := t.Ctx.Input.Param(":id")
 	recordThemeId, err := strconv.ParseInt(recordThemeIdStr, 10, 64)
 	if err != nil {
@@ -20,12 +24,10 @@ func (t *ThemeController) Finish() {
 
 	recordTheme, ok := record.GetTheme(recordThemeId)
 	if !ok {
-		t.Redirect("/err", 500)
-		return
+		t.Abort("500")
 	}
 	if recordTheme.Status != record.ThemeStatusPlaying {
-		t.Redirect("/err", 500)
-		return
+		t.Abort("500")
 	}
 
 	recordTheme.Finish()
@@ -33,7 +35,7 @@ func (t *ThemeController) Finish() {
 	t.Redirect("/", 302)
 }
 
-func (t *ThemeController) Unfinish() {
+func (t *ThemeController) DoUnfinish() {
 	recordThemeIdStr := t.Ctx.Input.Param(":id")
 	recordThemeId, err := strconv.ParseInt(recordThemeIdStr, 10, 64)
 	if err != nil {
@@ -42,12 +44,10 @@ func (t *ThemeController) Unfinish() {
 
 	recordTheme, ok := record.GetTheme(recordThemeId)
 	if !ok {
-		t.Redirect("/err", 500)
-		return
+		t.Abort("500")
 	}
 	if recordTheme.Status != record.ThemeStatusPlaying {
-		t.Redirect("/err", 500)
-		return
+		t.Abort("500")
 	}
 
 	recordTheme.Unfinish()
@@ -55,7 +55,7 @@ func (t *ThemeController) Unfinish() {
 	t.Redirect("/", 302)
 }
 
-func (t *ThemeController) Tip() {
+func (t *ThemeController) DoTip() {
 	recordThemeIdStr := t.Ctx.Input.Param(":id")
 	recordThemeId, err := strconv.ParseInt(recordThemeIdStr, 10, 64)
 	if err != nil {
@@ -64,12 +64,10 @@ func (t *ThemeController) Tip() {
 
 	recordTheme, ok := record.GetTheme(recordThemeId)
 	if !ok {
-		t.Redirect("/err", 500)
-		return
+		t.Abort("500")
 	}
 	if recordTheme.Status != record.ThemeStatusPlaying {
-		t.Redirect("/err", 500)
-		return
+		t.Abort("500")
 	}
 
 	recordTheme.Tip()

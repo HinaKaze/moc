@@ -1,0 +1,79 @@
+{
+	"comment": "",
+	"ignore": "test",
+	"package": [
+		{
+			"checksumSHA1": "e9u5CletpzwhAOhU8rXoLopFTX8=",
+			"path": "github.com/astaxie/beego",
+			"revision": "90999717dda6193c6f970eec52e289b0a9e74998",
+			"revisionTime": "2016-12-05T15:14:26Z"
+		},
+		{
+			"checksumSHA1": "kjytFi3nPY+nCfokcTtxP8nCL48=",
+			"path": "github.com/astaxie/beego/config",
+			"revision": "90999717dda6193c6f970eec52e289b0a9e74998",
+			"revisionTime": "2016-12-05T15:14:26Z"
+		},
+		{
+			"checksumSHA1": "swT6CGf6GtG3dRFrosdKU0L0oj0=",
+			"path": "github.com/astaxie/beego/context",
+			"revision": "90999717dda6193c6f970eec52e289b0a9e74998",
+			"revisionTime": "2016-12-05T15:14:26Z"
+		},
+		{
+			"checksumSHA1": "HSyNHiauTk3hE0hMwnlEti60NKs=",
+			"path": "github.com/astaxie/beego/grace",
+			"revision": "90999717dda6193c6f970eec52e289b0a9e74998",
+			"revisionTime": "2016-12-05T15:14:26Z"
+		},
+		{
+			"checksumSHA1": "9zYV333UEh57giewYT/sw1pVcGo=",
+			"path": "github.com/astaxie/beego/logs",
+			"revision": "90999717dda6193c6f970eec52e289b0a9e74998",
+			"revisionTime": "2016-12-05T15:14:26Z"
+		},
+		{
+			"checksumSHA1": "Hj4LPDWF91LMRXoe0h5+H+Fp29E=",
+			"path": "github.com/astaxie/beego/orm",
+			"revision": "90999717dda6193c6f970eec52e289b0a9e74998",
+			"revisionTime": "2016-12-05T15:14:26Z"
+		},
+		{
+			"checksumSHA1": "bTnlmiZsSJz8WGXmOf+UhHb+5Iw=",
+			"path": "github.com/astaxie/beego/session",
+			"revision": "90999717dda6193c6f970eec52e289b0a9e74998",
+			"revisionTime": "2016-12-05T15:14:26Z"
+		},
+		{
+			"checksumSHA1": "s6ssmbMKnIbOCsboRkPNm+20xCI=",
+			"path": "github.com/astaxie/beego/toolbox",
+			"revision": "90999717dda6193c6f970eec52e289b0a9e74998",
+			"revisionTime": "2016-12-05T15:14:26Z"
+		},
+		{
+			"checksumSHA1": "Zc7cli1PFfbrd0hcUR7JtFW9A78=",
+			"path": "github.com/astaxie/beego/utils",
+			"revision": "90999717dda6193c6f970eec52e289b0a9e74998",
+			"revisionTime": "2016-12-05T15:14:26Z"
+		},
+		{
+			"checksumSHA1": "K9GwAT86rPyEqzUH/gHjDdXxqUs=",
+			"path": "github.com/hinakaze/iniparser",
+			"revision": "ef0be5c9ace6327c93eb5c04744d155f7abec191",
+			"revisionTime": "2017-01-07T07:08:24Z"
+		},
+		{
+			"checksumSHA1": "MEgsIGwSHqkYfLcxrwilNdI4S4M=",
+			"path": "github.com/lib/pq",
+			"revision": "8df6253d1317616f36b0c3740eb30c239a7372cb",
+			"revisionTime": "2017-01-03T19:20:09Z"
+		},
+		{
+			"checksumSHA1": "K4XuhnpGWTFMLSDIdvDr5AH3fTw=",
+			"path": "github.com/lib/pq/oid",
+			"revision": "8df6253d1317616f36b0c3740eb30c239a7372cb",
+			"revisionTime": "2017-01-03T19:20:09Z"
+		}
+	],
+	"rootPath": "github.com/hinakaze/moc"
+}

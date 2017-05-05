@@ -10,14 +10,14 @@ import (
 
 func init() {
 	beego.Router("/", &controller.MainController{})
-	beego.Router("/error", &controller.ErrorController{})
 
 	beego.Router("/dashboard/workbench", &dashboard.WorkbenchController{})
 
 	beego.Router("/reserve/theme", &reserve.ThemeController{}, "post:Post")
-	beego.Router("/reserve/theme/:id/start", &reserve.ThemeController{}, "*:Start")
+	beego.Router("/reserve/theme/:id/start", &reserve.ThemeController{}, "get:DoStart")
+	beego.Router("/reserve/theme/:id/delete", &reserve.ThemeController{}, "get:DoDelete")
 
-	beego.Router("/record/theme/:id/finish", &record.ThemeController{}, "put:Finish")
-	beego.Router("/record/theme/:id/unfinish", &record.ThemeController{}, "put:Unfinish")
-	beego.Router("/record/theme/:id/tip", &record.ThemeController{}, "put:Tip")
+	beego.Router("/record/theme/:id/finish", &record.ThemeController{}, "get:DoFinish")
+	beego.Router("/record/theme/:id/unfinish", &record.ThemeController{}, "get:DoUnfinish")
+	beego.Router("/record/theme/:id/tip", &record.ThemeController{}, "get:DoTip")
 }

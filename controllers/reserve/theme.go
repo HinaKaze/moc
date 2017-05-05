@@ -7,8 +7,11 @@ import (
 
 	"strconv"
 
+	"strings"
+
 	"github.com/hinakaze/moc/models/record"
 	"github.com/hinakaze/moc/models/reserve"
+	"github.com/hinakaze/moc/models/theme"
 )
 
 type ThemeController struct {
@@ -16,17 +19,21 @@ type ThemeController struct {
 }
 
 func (r *ThemeController) Post() {
+	themeId, err := r.GetInt64("theme_id")
+	if err != nil {
+		r.Abort(err.Error())
+	}
 	teamName := r.GetString("team_name")
 	phoneNumber := r.GetString("phone_number")
 	memberCount, err := r.GetInt("member_count")
 	if err != nil {
-		panic(err)
+		r.Abort(err.Error())
 	}
-	beginTimeStr := r.GetString("begin_time")
+	beginTimeStr := strings.TrimSpace(r.GetString("begin_time"))
 
-	beginTime, err := time.ParseInLocation("2006-01-02 15:04:05 +0800 CST", beginTimeStr, time.Local)
+	beginTime, err := time.ParseInLocation("2006-01-02T15:04:00", beginTimeStr, time.Local)
 	if err != nil {
-		panic(err)
+		r.Abort(err.Error())
 	}
 
 	newReserveTheme := new(reserve.Theme)
@@ -34,12 +41,35 @@ func (r *ThemeController) Post() {
 	newReserveTheme.PhoneNumber = phoneNumber
 	newReserveTheme.MemberCount = memberCount
 	newReserveTheme.BeginTime = beginTime
+	newReserveTheme.Theme = new(theme.Theme)
+	newReserveTheme.Theme.Id = themeId
 	reserve.InsertTheme(newReserveTheme)
 
 	r.Redirect("/", 302)
 }
 
-func (r *ThemeController) Start() {
+func (r *ThemeController) DoDelete() {
+	reserveThemeIdStr := r.Ctx.Input.Param(":id")
+	reserveThemeId, err := strconv.ParseInt(reserveThemeIdStr, 10, 64)
+	if err != nil {
+		panic(err)
+	}
+
+	reserveTheme, ok := reserve.GetTheme(reserveThemeId)
+	if !ok {
+		r.Abort("500")
+	}
+	if reserveTheme.Status != reserve.ThemeStatusWaiting {
+		r.Abort("500")
+	}
+
+	reserveTheme.Status = reserve.ThemeStatusDeleted
+	reserve.UpdateTheme(reserveTheme)
+
+	r.Redirect("/", 302)
+}
+
+func (r *ThemeController) DoStart() {
 	reserveThemeIdStr := r.Ctx.Input.Param(":id")
 	reserveThemeId, err := strconv.ParseInt(reserveThemeIdStr, 10, 64)
 	if err != nil {
@@ -52,7 +82,7 @@ func (r *ThemeController) Start() {
 		panic(err)
 	}
 
-	reserveTheme, ok := reserve.GetTheme(int64(reserveThemeId))
+	reserveTheme, ok := reserve.GetTheme(reserveThemeId)
 	if !ok {
 		r.Redirect("/error", 500)
 		return

@@ -38,7 +38,7 @@ func UpdateTheme(t *Theme) {
 
 func GetThemesByStatus(status ThemeStatus) []Theme {
 	themes := make([]Theme, 0)
-	num, err := orm.NewOrm().QueryTable("record_theme").Filter("status", status).All(&themes)
+	num, err := orm.NewOrm().QueryTable(new(Theme).TableName()).Filter("status", status).RelatedSel().All(&themes)
 	if err != nil {
 		panic(err)
 	}
