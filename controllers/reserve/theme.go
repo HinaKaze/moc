@@ -9,6 +9,8 @@ import (
 
 	"strings"
 
+	"fmt"
+
 	"github.com/hinakaze/moc/models/record"
 	"github.com/hinakaze/moc/models/reserve"
 	"github.com/hinakaze/moc/models/theme"
@@ -31,7 +33,7 @@ func (r *ThemeController) Post() {
 	}
 	beginTimeStr := strings.TrimSpace(r.GetString("begin_time"))
 
-	beginTime, err := time.ParseInLocation("2006-01-02T15:04:00", beginTimeStr, time.Local)
+	beginTime, err := time.ParseInLocation("2006-01-02 15:04:00", beginTimeStr, time.Local)
 	if err != nil {
 		r.Abort(err.Error())
 	}
@@ -44,6 +46,45 @@ func (r *ThemeController) Post() {
 	newReserveTheme.Theme = new(theme.Theme)
 	newReserveTheme.Theme.Id = themeId
 	reserve.InsertTheme(newReserveTheme)
+
+	r.Redirect("/", 302)
+}
+
+func (r *ThemeController) DoUpdate() {
+	reserveThemeIdStr := r.Ctx.Input.Param(":id")
+	reserveThemeId, err := strconv.ParseInt(reserveThemeIdStr, 10, 64)
+	if err != nil {
+		panic(err)
+	}
+	themeId, err := r.GetInt64("theme_id")
+	if err != nil {
+		r.Abort(err.Error())
+	}
+	teamName := r.GetString("team_name")
+	phoneNumber := r.GetString("phone_number")
+	memberCount, err := r.GetInt("member_count")
+	if err != nil {
+		r.Abort(err.Error())
+	}
+	beginTimeStr := strings.TrimSpace(r.GetString("begin_time"))
+
+	beginTime, err := time.ParseInLocation("2006-01-02 15:04:00", beginTimeStr, time.Local)
+	if err != nil {
+		r.Abort(err.Error())
+	}
+
+	reserveTheme, ok := reserve.GetTheme(reserveThemeId)
+	if !ok {
+		r.Abort(fmt.Sprintf("Can't find reserve theme [%d]", reserveThemeId))
+	}
+
+	reserveTheme.TeamName = teamName
+	reserveTheme.PhoneNumber = phoneNumber
+	reserveTheme.MemberCount = memberCount
+	reserveTheme.BeginTime = beginTime
+	reserveTheme.Theme.Id = themeId
+
+	reserve.UpdateTheme(reserveTheme)
 
 	r.Redirect("/", 302)
 }

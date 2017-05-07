@@ -1,13 +1,26 @@
 .blur{
-    -moz-filter: blur(3px);
-    -webkit-filter: blur(3px);
-    -o-filter: blur(3px);
-    -ms-filter: blur(3px);
-    filter: blur(3px);
+    -moz-filter: blur(2px);
+    -webkit-filter: blur(2px);
+    -o-filter: blur(2px);
+    -ms-filter: blur(2px);
+    filter: blur(2px);
 }
 
+th{
+    width: 100px;
+    padding: 5px;
+}
 
-.dashboard-workbench-reserve-form-toggle{
+.timer{
+    padding-left: 2px;
+    padding-right: 2px;
+    background-color: rgba(120, 120, 120, 0.6);
+    border-radius: 5px;
+    color: white;
+    font-size: 20px;
+}
+
+.dashboard-workbench-reserve-form-toggle {
     margin-left: 5px;
     margin-top: 2px;    
 }
@@ -17,12 +30,9 @@
     height: 250px;
     border-color: blue;
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
-    width: 9999px;
 }
 
-.dashboard-workbench-theme h3{
-    text-align: center;
-}
+
 
 .dashboard-workbench-theme-desc {
     float: left;
@@ -35,21 +45,42 @@
     margin-left: 5px;
 }
 
+.dashboard-workbench-theme-desc >  h3{
+    text-align: center;
+    color: yellow;
+    margin: 10px;
+}
+
 .dashboard-workbench-theme-current{
     float: left;
-    width: 250px;
+    width: 300px;
     height: 250px;
     background-color: red;
     margin-left: 5px;
     color: white;
     padding: 10px;
 }
+
+.dashboard-workbench-theme-current >  h3{
+    text-align: center;
+    color: yellow;
+    margin: 10px;
+}
 /*.dashboard-workbench-theme-current > button{
     color: white;
 }*/
 
+.dashboard-workbench-theme-reserves-container{
+     width: 65%;
+     float: left;
+     overflow : scroll ;
+     overflow-x: auto;
+     overflow-y:hidden;
+}
+
 .dashboard-workbench-theme-reserves{
-    float: left;
+    width: 9999px;
+    /*width: 100%;*/
 }
 
 .dashboard-workbench-theme-reserve{
@@ -62,6 +93,11 @@
     padding: 10px;
 }
 
+.dashboard-workbench-theme-reserve >  h3{
+    text-align: center;
+    margin: 10px;
+}
+
 .dashboard-workbench-theme-reserve-pay-popup{
     border: 1px ;
     background-color: rgba(0, 255, 255, 0.8);
@@ -70,14 +106,14 @@
 
 .dashboard-workbench-theme-reserve-form{
     width: 400px;
-    border: 1px solid #333;
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+    border: 1px solid #555;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
     padding: 10px;
     border-radius: 3px;
     position: fixed;
     left: 40%;
-    top: 30%;
-    background-color: white;
+    top: 25%;
+    background-color: rgba(255, 255, 255, 0.8);
 }
 
 

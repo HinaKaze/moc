@@ -7,3 +7,13 @@ class MOC {
 }
 
 var moc = new(MOC);
+
+Vue.component("timer",{
+    props:["timestr"],
+    template: '<span>{{ timestr }}</span>'
+})
+
+Vue.component("rtimer",{
+    props:["timestr"],
+    template: '<span>{{ timestr }}</span>'
+})

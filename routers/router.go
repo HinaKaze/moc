@@ -15,6 +15,7 @@ func init() {
 
 	beego.Router("/reserve/theme", &reserve.ThemeController{}, "post:Post")
 	beego.Router("/reserve/theme/:id/start", &reserve.ThemeController{}, "get:DoStart")
+	beego.Router("/reserve/theme/:id/update", &reserve.ThemeController{}, "post:DoUpdate")
 	beego.Router("/reserve/theme/:id/delete", &reserve.ThemeController{}, "get:DoDelete")
 
 	beego.Router("/record/theme/:id/finish", &record.ThemeController{}, "get:DoFinish")
