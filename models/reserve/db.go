@@ -43,7 +43,7 @@ func GetThemesByStatus(status ThemeStatus) []Theme {
 	// cond.And("BeginTime_gt", time.Now())
 	//num, err := orm.NewOrm().QueryTable("reserve_theme").Filter("status", Status).SetCond(cond).All(&themes)
 
-	num, err := orm.NewOrm().QueryTable(new(Theme).TableName()).Filter("status", status).RelatedSel().All(&themes)
+	num, err := orm.NewOrm().QueryTable(new(Theme).TableName()).Filter("status", status).OrderBy("begin_time").RelatedSel().All(&themes)
 	if err != nil {
 		panic(err)
 	}

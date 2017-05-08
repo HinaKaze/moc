@@ -9,5 +9,6 @@ type MainController struct {
 }
 
 func (c *MainController) Get() {
-	c.TplName = "main.html"
+	// c.TplName = "main.html"
+	c.Redirect("/dashboard/workbench", 302)
 }

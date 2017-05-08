@@ -1,10 +1,9 @@
 package record
 
 import (
-	"log"
 	"strconv"
 
-	"runtime/debug"
+	"fmt"
 
 	"github.com/astaxie/beego"
 	"github.com/hinakaze/moc/models/record"
@@ -15,19 +14,18 @@ type ThemeController struct {
 }
 
 func (t *ThemeController) DoFinish() {
-	log.Printf("%s", debug.Stack())
-	recordThemeIdStr := t.Ctx.Input.Param(":id")
-	recordThemeId, err := strconv.ParseInt(recordThemeIdStr, 10, 64)
+	recordThemeIDStr := t.Ctx.Input.Param(":id")
+	recordThemeID, err := strconv.ParseInt(recordThemeIDStr, 10, 64)
 	if err != nil {
-		panic(err)
+		t.Abort(err.Error())
 	}
 
-	recordTheme, ok := record.GetTheme(recordThemeId)
+	recordTheme, ok := record.GetTheme(recordThemeID)
 	if !ok {
-		t.Abort("500")
+		t.Abort(fmt.Sprintf("No such record themd [%d]", recordThemeID))
 	}
 	if recordTheme.Status != record.ThemeStatusPlaying {
-		t.Abort("500")
+		t.Abort(fmt.Sprintf("Record themd [%d] not in playing", recordThemeID))
 	}
 
 	recordTheme.Finish()
@@ -36,18 +34,18 @@ func (t *ThemeController) DoFinish() {
 }
 
 func (t *ThemeController) DoUnfinish() {
-	recordThemeIdStr := t.Ctx.Input.Param(":id")
-	recordThemeId, err := strconv.ParseInt(recordThemeIdStr, 10, 64)
+	recordThemeIDStr := t.Ctx.Input.Param(":id")
+	recordThemeID, err := strconv.ParseInt(recordThemeIDStr, 10, 64)
 	if err != nil {
-		panic(err)
+		t.Abort(err.Error())
 	}
 
-	recordTheme, ok := record.GetTheme(recordThemeId)
+	recordTheme, ok := record.GetTheme(recordThemeID)
 	if !ok {
-		t.Abort("500")
+		t.Abort(fmt.Sprintf("No such record themd [%d]", recordThemeID))
 	}
 	if recordTheme.Status != record.ThemeStatusPlaying {
-		t.Abort("500")
+		t.Abort(fmt.Sprintf("Record themd [%d] not in playing", recordThemeID))
 	}
 
 	recordTheme.Unfinish()
@@ -56,18 +54,18 @@ func (t *ThemeController) DoUnfinish() {
 }
 
 func (t *ThemeController) DoTip() {
-	recordThemeIdStr := t.Ctx.Input.Param(":id")
-	recordThemeId, err := strconv.ParseInt(recordThemeIdStr, 10, 64)
+	recordThemeIDStr := t.Ctx.Input.Param(":id")
+	recordThemeID, err := strconv.ParseInt(recordThemeIDStr, 10, 64)
 	if err != nil {
-		panic(err)
+		t.Abort(err.Error())
 	}
 
-	recordTheme, ok := record.GetTheme(recordThemeId)
+	recordTheme, ok := record.GetTheme(recordThemeID)
 	if !ok {
-		t.Abort("500")
+		t.Abort(fmt.Sprintf("No such record themd [%d]", recordThemeID))
 	}
 	if recordTheme.Status != record.ThemeStatusPlaying {
-		t.Abort("500")
+		t.Abort(fmt.Sprintf("Record themd [%d] not in playing", recordThemeID))
 	}
 
 	recordTheme.Tip()

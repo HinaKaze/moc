@@ -46,3 +46,20 @@ func GetThemesByStatus(status ThemeStatus) []Theme {
 	log.Printf("GetRecordsByStatus returned rows : %d ", num)
 	return themes
 }
+
+/*
+rule :
+	1 . finished
+	2 . used time
+	3 . begin time
+*/
+
+func GetThemesRank(themeID int64, limit int) []Theme {
+	themes := make([]Theme, 0)
+	num, err := orm.NewOrm().QueryTable(new(Theme).TableName()).Filter("status", ThemeStatusFinished).Filter("reserve__theme__id", themeID).OrderBy("time_used", "begin_time").Limit(limit).RelatedSel().All(&themes)
+	if err != nil {
+		panic(err)
+	}
+	log.Printf("GetThemesRank themeID [%d] limit [%d] returned rows : %d", themeID, limit, num)
+	return themes
+}
