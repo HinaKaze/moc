@@ -1,324 +1,265 @@
-<!DOCTYPE html>
-<html lang="zh-CN">
-
-<head>
-    <meta charset="utf-8">
-    <meta http-equiv="cache-control" content="no-store">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
-    <title>MOC Park System</title>
-    <!-- css files -->
-    <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
-
-    <!-- user css files -->
-    <link rel="stylesheet" href="/static/css/main.css">
-    <link rel="stylesheet" href="/static/css/dashboard/workbench.css">
-
-    <!-- js files -->
-    <script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-    <script src="https://cdn.bootcss.com/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb"
-        crossorigin="anonymous"></script>
-    <script src="https://cdn.bootcss.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn"
-        crossorigin="anonymous"></script>
-    <script src="https://cdn.bootcss.com/moment.js/2.18.1/moment.min.js"></script>
-    <script src="https://unpkg.com/vue@2.3.2/dist/vue.js"></script>
-
-    <!-- user js files -->
-    <script src="/static/js/moc.js"></script>
-
-    <script type="text/javascript">
-        $(document).ready(function () {
-            var themes = {{.Themes }}
-            for (theme of themes) {
-                if (theme.Running != null) {
-                    theme.Running.timestr = ""
-                }
-                for (reserve of theme.Reserves) {
-                    reserve.timestr = ""
-                }
+<script type="text/javascript">
+    $(document).ready(function () {
+        var themes = {{.Themes }};
+        for (theme of themes) {
+            if (theme.Running != null) {
+                theme.Running.timestr = ""
             }
+            for (reserve of theme.Reserves) {
+                reserve.timestr = ""
+            }
+        }
 
-            var workbench = new Vue({
-                delimiters: ['${', '}'],
-                el: "#dashboard-workbench",
-                data: {
-                    themes: themes,
-                    reserveForm: {
-                        id: -1,
-                        themeId: -1,
-                        teamName: "路人小队",
-                        beginTime: "",
-                        memberCount: "",
-                        phoneNumber: "",
-                        newFlag: true,
-                        showFlag: false
-                    },
-                    showReservePayFlag: false
+        var workbench = new Vue({
+            delimiters: ['${', '}'],
+            el: "#dashboard-workbench",
+            data: {
+                themes: themes,
+                reserveForm: {
+                    id: -1,
+                    themeId: -1,
+                    teamName: "路人小队",
+                    beginTime: "",
+                    memberCount: "",
+                    phoneNumber: "",
+                    newFlag: true,
+                    showFlag: false
                 },
-                methods: {
-                    //Reserve function
-                    startReserve: function (event) {
-                        var reserveThemeId = event.target.parentNode.attributes["reserve-theme-id"].nodeValue
-                        var pay_type = "meituan"
-                        var pay_price = 108
-                        $.get("/reserve/theme/" + reserveThemeId + "/start?pay_type=" + pay_type + "&pay_price=" + pay_price, function (data, status) {
-                            $("body").html(data)
-                        })
-                    },
-                    submitReserveForm: function (event) {
-                        if (this.reserveForm.newFlag) {
-                            $.post("/reserve/theme", $(event.target).serialize(), function (data, status) {
-                                $("body").html(data);
-                            });
-                        } else {
-                            $.post("/reserve/theme/" + this.reserveForm.id + "/update", $(event.target).serialize(), function (data, status) {
-                                $("body").html(data);
-                            });
-                        }
-                    },
-                    editReserve: function (event) {
-                        var reserveThemeId = event.target.parentNode.parentNode.attributes["reserve-theme-id"].nodeValue
-                        this.reserveForm.showFlag = true;
-                        OUTER:
-                        for (theme of this.themes) {
-                            for (reserve of theme.Reserves) {
-                                if (reserve.Id == reserveThemeId) {
-                                    this.reserveForm.id = reserve.Id
-                                    this.reserveForm.themeId = reserve.Theme.Id
-                                    this.reserveForm.teamName = reserve.TeamName
-                                    this.reserveForm.beginTime = reserve.BeginTime
-                                    this.reserveForm.memberCount = reserve.MemberCount
-                                    this.reserveForm.phoneNumber = reserve.PhoneNumber
-                                    this.reserveForm.newFlag = false
-                                    break OUTER
-                                }
+                showReservePayFlag: false
+            },
+            methods: {
+                //Reserve function
+                startReserve: function (event) {
+                    var reserveThemeId = event.target.parentNode.attributes["reserve-theme-id"].nodeValue
+                    var pay_type = "meituan"
+                    var pay_price = 108
+                    $.get("/reserve/theme/" + reserveThemeId + "/start?pay_type=" + pay_type + "&pay_price=" + pay_price, function (data, status) {
+                        $("body").html(data)
+                    })
+                },
+                submitReserveForm: function (event) {
+                    if (this.reserveForm.newFlag) {
+                        $.post("/reserve/theme", $(event.target).serialize(), function (data, status) {
+                            $("body").html(data);
+                        });
+                    } else {
+                        $.post("/reserve/theme/" + this.reserveForm.id + "/update", $(event.target).serialize(), function (data, status) {
+                            $("body").html(data);
+                        });
+                    }
+                },
+                editReserve: function (event) {
+                    var reserveThemeId = event.target.parentNode.parentNode.attributes["reserve-theme-id"].nodeValue
+                    this.reserveForm.showFlag = true;
+                    OUTER:
+                    for (theme of this.themes) {
+                        for (reserve of theme.Reserves) {
+                            if (reserve.Id == reserveThemeId) {
+                                this.reserveForm.id = reserve.Id
+                                this.reserveForm.themeId = reserve.Theme.Id
+                                this.reserveForm.teamName = reserve.TeamName
+                                this.reserveForm.beginTime = reserve.BeginTime
+                                this.reserveForm.memberCount = reserve.MemberCount
+                                this.reserveForm.phoneNumber = reserve.PhoneNumber
+                                this.reserveForm.newFlag = false
+                                break OUTER
                             }
                         }
-                    },
-                    deleteReserve: function (event) {
-                        var reserveThemeId = event.target.parentNode.parentNode.attributes["reserve-theme-id"].nodeValue
-                        $.get("/reserve/theme/" + reserveThemeId + "/delete", function (data, status) {
-                            $("body").html(data)
-                        })
-                    },
-                    toggleReservePay: function (event) {
-                        this.showReservePayFlag = this.showReservePayFlag ? false : true;
-                    },
-                    toggleReserveForm: function (event) {
-                        this.reserveForm.showFlag = this.reserveForm.showFlag ? false : true;
-                        this.reserveForm.id = -1
-                        this.reserveForm.themeId = -1
-                        this.reserveForm.teamName = "路人小队"
-                        this.reserveForm.beginTime = ""
-                        this.reserveForm.memberCount = ""
-                        this.reserveForm.phoneNumber = ""
-                        this.reserveForm.newFlag = true;
-                    },
+                    }
+                },
+                deleteReserve: function (event) {
+                    var reserveThemeId = event.target.parentNode.parentNode.attributes["reserve-theme-id"].nodeValue
+                    $.get("/reserve/theme/" + reserveThemeId + "/delete", function (data, status) {
+                        $("body").html(data)
+                    })
+                },
+                toggleReservePay: function (event) {
+                    this.showReservePayFlag = this.showReservePayFlag ? false : true;
+                },
+                toggleReserveForm: function (event) {
+                    this.reserveForm.showFlag = this.reserveForm.showFlag ? false : true;
+                    this.reserveForm.id = -1
+                    this.reserveForm.themeId = -1
+                    this.reserveForm.teamName = "路人小队"
+                    this.reserveForm.beginTime = ""
+                    this.reserveForm.memberCount = ""
+                    this.reserveForm.phoneNumber = ""
+                    this.reserveForm.newFlag = true;
+                },
 
-                    //Record function
-                    tipRecord: function (event) {
-                        var recordThemeId = event.target.attributes["record-theme-id"].nodeValue
-                        console.log(recordThemeId)
-                        $.get("record/theme/" + recordThemeId + "/tip", function (data, status) {
-                            $("body").html(data)
-                        })
-                    },
-                    finishRecord: function (event) {
-                        var recordThemeId = event.target.parentNode.attributes["record-theme-id"].nodeValue
-                        console.log(recordThemeId)
-                        $.get("record/theme/" + recordThemeId + "/finish", function (data, status) {
-                            $("body").html(data)
-                        })
-                    },
-                    unfinishRecord: function (event) {
-                        var recordThemeId = event.target.parentNode.attributes["record-theme-id"].nodeValue
-                        console.log(recordThemeId)
-                        $.get("record/theme/" + recordThemeId + "/unfinish", function (data, status) {
-                            $("body").html(data)
-                        })
-                    },
+                //Record function
+                tipRecord: function (event) {
+                    var recordThemeId = event.target.attributes["record-theme-id"].nodeValue
+                    console.log(recordThemeId)
+                    $.get("record/theme/" + recordThemeId + "/tip", function (data, status) {
+                        $("body").html(data)
+                    })
+                },
+                finishRecord: function (event) {
+                    var recordThemeId = event.target.parentNode.attributes["record-theme-id"].nodeValue
+                    console.log(recordThemeId)
+                    $.get("record/theme/" + recordThemeId + "/finish", function (data, status) {
+                        $("body").html(data)
+                    })
+                },
+                unfinishRecord: function (event) {
+                    var recordThemeId = event.target.parentNode.attributes["record-theme-id"].nodeValue
+                    console.log(recordThemeId)
+                    $.get("record/theme/" + recordThemeId + "/unfinish", function (data, status) {
+                        $("body").html(data)
+                    })
+                },
+            }
+        })
+
+        setInterval(timer, 1000)
+
+        function timer() {
+            for (theme of workbench.themes) {
+                if (theme.Running != null) {
+                    var time = moment(theme.Running.BeginTime)
+                    var d = moment().diff(time)
+                    var duration = moment.duration(d)
+                    theme.Running.timestr = duration.hours() + " : " + duration.minutes() + " : " + duration.seconds();
                 }
-            })
 
-            setInterval(timer, 1000)
-
-            function timer() {
-                for (theme of workbench.themes) {
-                    if (theme.Running != null) {
-                        var time = moment(theme.Running.BeginTime)
-                        var d = moment().diff(time)
-                        var duration = moment.duration(d)
-                        theme.Running.timestr = duration.hours() + " : " + duration.minutes() + " : " + duration.seconds();
-                    }
-
-                    for (reserve of theme.Reserves) {
-                        var time = moment(reserve.BeginTime)
-                        var d = time.diff(moment())
-                        var duration = moment.duration(d)
-                        reserve.timestr = duration.hours() + " : " + duration.minutes() + " : " + duration.seconds();
-                    }
+                for (reserve of theme.Reserves) {
+                    var time = moment(reserve.BeginTime)
+                    var d = time.diff(moment())
+                    var duration = moment.duration(d)
+                    reserve.timestr = duration.hours() + " : " + duration.minutes() + " : " + duration.seconds();
                 }
             }
-        });
-    </script>
-</head>
+        }
+    });
 
-<body>
-    <!-- <img class="main-background" id="main-background" src="/static/img/chat-room-background.png"></img> -->
-    <div class="main-header" id="main-header">
-        <!-- <div class="main-header-logo"></div> -->
-        <h1>MOC Park Dashboard</h1>
+</script>
 
-        <nav class="navbar navbar-toggleable-md navbar-light bg-faded">
-            <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
-                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <a class="navbar-brand" href="#">MOC</a>
-
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <ul class="navbar-nav mr-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="/">Workbench</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/theme/1/rank">Rank</a>
-                    </li>
-                </ul>
-            </div>
-        </nav>
-
-    </div>
-    <div class="main-content" id="main-content">
-        <div class="dashboard-workbench" id="dashboard-workbench">
-            <button v-on:click="toggleReserveForm" class="btn btn-sm btn-outline-success dashboard-workbench-reserve-form-toggle">+</button>
-            <div class="dashboard-workbench-theme" v-bind:class="{blur:reserveForm.showFlag}" v-for="theme of themes" v-bind:theme-id="theme.Id">
-                <div class="dashboard-workbench-theme-desc">
-                    <h3>${ theme.Theme.Title }</h3>
+<div class="dashboard-workbench" id="dashboard-workbench">
+    <button v-on:click="toggleReserveForm" class="btn btn-sm btn-outline-success dashboard-workbench-reserve-form-toggle pointer">+</button>
+    <div class="dashboard-workbench-theme" v-bind:class="{blur:reserveForm.showFlag}" v-for="theme of themes" v-bind:theme-id="theme.Id">
+        <div class="dashboard-workbench-theme-desc">
+            <h3>${ theme.Theme.Title }</h3>
+            <table>
+                <tr>
+                    <th>描述:</td>
+                        <td>${ theme.Theme.Desc }</td>
+                </tr>
+                <tr>
+                    <th>最小人数:</td>
+                        <td>${ theme.Theme.MinMember }</td>
+                </tr>
+                <tr>
+                    <th>最大人数:</td>
+                        <td>${ theme.Theme.MaxMember }</td>
+                </tr>
+            </table>
+        </div>
+        <div class="dashboard-workbench-theme-current" v-bind:record-theme-id="theme.Running.Id" v-if="theme.Running">
+            <h3>正在游戏中</h3>
+            <table>
+                <tr>
+                    <th>付款方式:</td>
+                        <td>${ theme.Running.PayType }</td>
+                </tr>
+                <tr>
+                    <th>付款价格:</td>
+                        <td>${ theme.Running.PayPrice }</td>
+                </tr>
+                <tr>
+                    <th>已用提示:</td>
+                        <td>${ theme.Running.TipUsed }</td>
+                        <td><button v-on:click="tipRecord" class="btn btn-sm btn-outline-warning" v-bind:record-theme-id="theme.Running.Id">提示</button></td>
+                </tr>
+                <tr>
+                    <th>游戏时间:</td>
+                        <td class="timer">${ theme.Running.timestr }</td>
+                        <!--<td>${ theme.Running.BeginTime }</td>-->
+                </tr>
+            </table>
+            <button v-on:click="finishRecord" class="btn btn-sm btn-outline-warning"> finish </button>
+            <button v-on:click="unfinishRecord" class="btn btn-sm btn-outline-warning"> unfinish </button>
+        </div>
+        <div class="dashboard-workbench-theme-current" v-else>
+            <h3>正在游戏中</h3>
+            <div>饥渴地等待小伙伴...</div>
+        </div>
+        <div class="dashboard-workbench-theme-reserves-container">
+            <div class="dashboard-workbench-theme-reserves" v-if="theme.Reserves">
+                <div class="dashboard-workbench-theme-reserve" v-for="reserve of theme.Reserves" v-bind:reserve-theme-id="reserve.Id">
+                    <h3>预约中
+                        <button v-on:click="editReserve" class="btn btn-sm btn-outline-info">E</button>
+                        <button v-on:click="deleteReserve" class="btn btn-sm btn-outline-danger">X</button>
+                    </h3>
                     <table>
                         <tr>
-                            <th>描述:</td>
-                                <td>${ theme.Theme.Desc }</td>
+                            <th>小队名称:</td>
+                                <td>${ reserve.TeamName }</td>
                         </tr>
                         <tr>
-                            <th>最小人数:</td>
-                                <td>${ theme.Theme.MinMember }</td>
+                            <th>开始时间:</td>
+                                <td class="timer">${ reserve.timestr }</td>
                         </tr>
                         <tr>
-                            <th>最大人数:</td>
-                                <td>${ theme.Theme.MaxMember }</td>
-                        </tr>
-                    </table>
-                </div>
-                <div class="dashboard-workbench-theme-current" v-bind:record-theme-id="theme.Running.Id" v-if="theme.Running">
-                    <h3>正在游戏中</h3>
-                    <table>
-                        <tr>
-                            <th>付款方式:</td>
-                                <td>${ theme.Running.PayType }</td>
+                            <th>游玩人数:</td>
+                                <td>${ reserve.MemberCount }</td>
                         </tr>
                         <tr>
-                            <th>付款价格:</td>
-                                <td>${ theme.Running.PayPrice }</td>
-                        </tr>
-                        <tr>
-                            <th>已用提示:</td>
-                                <td>${ theme.Running.TipUsed }</td>
-                                <td><button v-on:click="tipRecord" class="btn btn-sm btn-outline-warning" v-bind:record-theme-id="theme.Running.Id">提示</button></td>
-                        </tr>
-                        <tr>
-                            <th>游戏时间:</td>
-                                <td class="timer">${ theme.Running.timestr }</td>
+                            <th>联系电话:</td>
+                                <td>${ reserve.PhoneNumber }</td>
                                 <!--<td>${ theme.Running.BeginTime }</td>-->
                         </tr>
                     </table>
-                    <button v-on:click="finishRecord" class="btn btn-sm btn-outline-warning"> finish </button>
-                    <button v-on:click="unfinishRecord" class="btn btn-sm btn-outline-warning"> unfinish </button>
-                </div>
-                <div class="dashboard-workbench-theme-current" v-else>
-                    <h3>正在游戏中</h3>
-                    <div>饥渴地等待小伙伴...</div>
-                </div>
-                <div class="dashboard-workbench-theme-reserves-container">
-                    <div class="dashboard-workbench-theme-reserves" v-if="theme.Reserves">
-                        <div class="dashboard-workbench-theme-reserve" v-for="reserve of theme.Reserves" v-bind:reserve-theme-id="reserve.Id">
-                            <h3>预约中
-                                <button v-on:click="editReserve" class="btn btn-sm btn-outline-info">E</button>
-                                <button v-on:click="deleteReserve" class="btn btn-sm btn-outline-danger">X</button>
-                            </h3>
-                            <table>
-                                <tr>
-                                    <th>小队名称:</td>
-                                        <td>${ reserve.TeamName }</td>
-                                </tr>
-                                <tr>
-                                    <th>开始时间:</td>
-                                        <td class="timer">${ reserve.timestr }</td>
-                                </tr>
-                                <tr>
-                                    <th>游玩人数:</td>
-                                        <td>${ reserve.MemberCount }</td>
-                                </tr>
-                                <tr>
-                                    <th>联系电话:</td>
-                                        <td>${ reserve.PhoneNumber }</td>
-                                        <!--<td>${ theme.Running.BeginTime }</td>-->
-                                </tr>
-                            </table>
-                            <button v-on:click="startReserve" class="btn btn-sm btn-outline-primary"> start </button>
-                            <div style="display:inline;">
-                                <button v-on:click="toggleReservePay" class="btn btn-sm btn-outline-primary">pay</button>
-                                <div v-if="showReservePayFlag" class="dashboard-workbench-theme-reserve-pay-popup">
-                                    <div>
-                                        <label>方式:</label>
-                                        <select name="pay_type">
+                    <button v-on:click="startReserve" class="btn btn-sm btn-outline-primary"> start </button>
+                    <div style="display:inline;">
+                        <button v-on:click="toggleReservePay" class="btn btn-sm btn-outline-primary">pay</button>
+                        <div v-if="showReservePayFlag" class="dashboard-workbench-theme-reserve-pay-popup">
+                            <div>
+                                <label>方式:</label>
+                                <select name="pay_type">
                                 <option value="美团">美团</option>
                                 <option value="大众点评">大众点评</option>
                             </select>
-                                    </div>
-                                    <div>
-                                        <label>总价:</label>
-                                        <input type="text" name="pay_price" />
-                                    </div>
-                                    <button class="btn btn-primary">确认</button>
-                                </div>
                             </div>
+                            <div>
+                                <label>总价:</label>
+                                <input type="text" name="pay_price" />
+                            </div>
+                            <button class="btn btn-primary">确认</button>
                         </div>
                     </div>
                 </div>
             </div>
-
-            <form class="dashboard-workbench-theme-reserve-form" v-on:submit.prevent="submitReserveForm" v-if="reserveForm.showFlag">
-                <span class="btn btn-sm btn-outline-danger" v-on:click="toggleReserveForm">X</span>
-                <div class="form-group">
-                    <label>密室主题 : </label>
-                    <select name="theme_id" class="form-control" v-model="reserveForm.themeId">
-                <option v-for="theme of themes" v-bind:value="theme.Theme.Id">${ theme.Theme.Title }</option>
-            </select>
-                </div>
-                <div class="form-group">
-                    <label>小队名称 : </label>
-                    <input class="form-control" type="text" name="team_name" v-model="reserveForm.teamName" />
-                </div>
-                <div class="form-group">
-                    <label>预约时间 : </label>
-                    <input type='text' class="form-control" name="begin_time" v-model="reserveForm.beginTime" />
-                </div>
-
-                <div class="form-group">
-                    <label>游玩人数 : </label>
-                    <input class="form-control" type="text" name="member_count" v-model="reserveForm.memberCount" />
-                </div>
-                <div class="form-group">
-                    <label>联系电话 : </label>
-                    <input class="form-control" type="text" name="phone_number" v-model="reserveForm.phoneNumber" />
-                </div>
-                
-                <input type="submit" class="btn btn-primary" value="new" v-if="reserveForm.newFlag" />
-                <input type="submit" class="btn btn-primary" value="change" v-else/>
-            </form>
         </div>
     </div>
-    <div id="main-footer"></div>
-</body>
 
-</html>
+    <form class="dashboard-workbench-theme-reserve-form" v-on:submit.prevent="submitReserveForm" v-if="reserveForm.showFlag">
+        <span class="btn btn-sm btn-outline-danger pointer" v-on:click="toggleReserveForm">X</span>
+        <div class="form-group">
+            <label>密室主题 : </label>
+            <select name="theme_id" class="form-control" v-model="reserveForm.themeId">
+                        <option v-for="theme of themes" v-bind:value="theme.Theme.Id">${ theme.Theme.Title }</option>
+                    </select>
+        </div>
+        <div class="form-group">
+            <label>小队名称 : </label>
+            <input class="form-control" type="text" name="team_name" v-model="reserveForm.teamName" />
+        </div>
+        <div class="form-group">
+            <label>预约时间 : </label>
+            <input type='text' class="form-control" name="begin_time" v-model="reserveForm.beginTime" />
+        </div>
+
+        <div class="form-group">
+            <label>游玩人数 : </label>
+            <input class="form-control" type="text" name="member_count" v-model="reserveForm.memberCount" />
+        </div>
+        <div class="form-group">
+            <label>联系电话 : </label>
+            <input class="form-control" type="text" name="phone_number" v-model="reserveForm.phoneNumber" />
+        </div>
+
+        <input type="submit" class="btn btn-primary pointer" value="new" v-if="reserveForm.newFlag" />
+        <input type="submit" class="btn btn-primary pointer" value="change" v-else/>
+    </form>
+</div>

@@ -29,6 +29,18 @@
             $.get("/dashboard/workbench", function (data, status) {
                 $("#main-content").html(data);
             })
+
+            $("#gotoWorkbench").click(function () {
+                $.get("/dashboard/workbench", function (data, status) {
+                    $("#main-content").html(data);
+                })
+            });
+
+            $("#gotoRank").click(function () {
+                $.get("/theme/1/rank", function (data, status) {
+                    $("#main-content").html(data);
+                })
+            });
         });
     </script>
 </head>
@@ -49,15 +61,15 @@
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav mr-auto">
                     <li class="nav-item">
-                         <a class="nav-link" href="/dashboard/workbench">Workbench</a>
+                        <span class="nav-link pointer" id="gotoWorkbench" >Workbench</span>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/theme/1/rank">Rank</a>
+                        <span class="nav-link pointer" id="gotoRank" >Rank</span>
                     </li>
                 </ul>
             </div>
         </nav>
-        
+
     </div>
     <div class="main-content" id="main-content">
 

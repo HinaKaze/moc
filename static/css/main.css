@@ -2,6 +2,10 @@ body {
     font-family: "Open Sans","Microsoft YaHei","Hiragino Sans GB","Hiragino Sans GB W3","微软雅黑","Helvetica Neue",Arial,sans-serif ;
 }
 
+.pointer:hover{
+    cursor: pointer;
+}
+
 .main-header {
     /*background-image: url("/static/img/title-background.jpg");*/
     /*background-position: center;*/
