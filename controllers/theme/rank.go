@@ -3,8 +3,11 @@ package theme
 import (
 	"strconv"
 
+	"fmt"
+
 	"github.com/astaxie/beego"
 	"github.com/hinakaze/moc/models/record"
+	"github.com/hinakaze/moc/models/theme"
 )
 
 type RankController struct {
@@ -18,8 +21,14 @@ func (t *RankController) GetRank() {
 		t.Abort(err.Error())
 	}
 
+	theme, ok := theme.GetTheme(themeID)
+	if !ok {
+		t.Abort(fmt.Sprintf("No such theme [%d]", themeID))
+	}
+
 	rank := record.GetThemesRank(themeID, 10)
 
 	t.Data["Rank"] = rank
+	t.Data["Theme"] = theme
 	t.TplName = "theme/rank.html"
 }

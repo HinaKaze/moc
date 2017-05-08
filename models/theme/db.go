@@ -6,6 +6,20 @@ import (
 	"github.com/astaxie/beego/orm"
 )
 
+func GetTheme(id int64) (*Theme, bool) {
+	t := new(Theme)
+	t.Id = id
+	err := orm.NewOrm().Read(t)
+	if err != nil {
+		if err == orm.ErrNoRows {
+			return nil, false
+		} else {
+			panic(err)
+		}
+	}
+	return t, true
+}
+
 func InsertTheme(t *Theme) *Theme {
 	var err error
 	t.Id, err = orm.NewOrm().Insert(t)

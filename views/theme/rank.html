@@ -33,7 +33,14 @@
                 delimiters: ['${', '}'],
                 el: "#theme-rank",
                 data: {
-                    ranks: {{.Rank }}
+                    ranks: {{.Rank }},
+                    theme: {{.Theme}}
+                },
+                filters: {
+                    formatTime : function(value){
+                        var time = moment(value)
+                        return time.years() + "-" + time.months() + "-" + time.days();
+                    }
                 }
             })
         });
@@ -68,16 +75,19 @@
     </div>
     <div class="main-content" id="main-content">
         <div id="theme-rank">
-            <table>
+            <h2 style="text-align:center">${ theme.Title }</h2>
+            <table class="table">
                 <tr>
                     <th>名次</th>
                     <td>小队名称</td>
                     <td>用时（秒）</td>
+                    <td>游玩时间</td>
                 </tr>
-                <tr v-for="(r,index) of ranks">
+                <tr v-for="(r,index) of ranks" v-bind:class="{active : index == 0 , info : index == 1 , warning : index == 2}">
                     <th>${ index + 1 }</th>
                     <td>${ r.Reserve.TeamName }</td>
                     <td>${ r.TimeUsed }</td>
+                    <td>${ r.BeginTime | formatTime }</td>
                 </tr>
             </table>
         </div>
