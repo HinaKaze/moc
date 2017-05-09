@@ -1,18 +1,23 @@
 <script type="text/javascript">
     $(document).ready(function () {
+        var ranks = {{.Rank}};
+        for (rank of ranks){
+            rank.BeginTime = moc.formatTime(rank.BeginTime)
+        }
+
         var rank = new Vue({
             delimiters: ['${', '}'],
             el: "#theme-rank",
             data: {
-                ranks: {{.Rank }},
+                ranks: ranks,
                 theme: {{.Theme }}
             },
-            filters: {
-                formatTime: function (value) {
-                    var time = moment(value)
-                    return time.year() + "-" + time.month() + "-" + time.days();
-                }
-            }
+            // filters: {
+            //     formatTime: function (value) {
+            //         var time = moment(value)
+            //         return time.year() + "-" + time.month() + "-" + time.days();
+            //     }
+            // }
         })
     });
 
@@ -31,7 +36,7 @@
             <th>${ index + 1 }</th>
             <td>${ r.Reserve.TeamName }</td>
             <td>${ r.TimeUsed }</td>
-            <td>${ r.BeginTime | formatTime }</td>
+            <td>${ r.BeginTime}</td>
         </tr>
     </table>
 </div>

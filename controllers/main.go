@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"github.com/astaxie/beego"
+	"github.com/hinakaze/moc/models/theme"
 )
 
 type MainController struct {
@@ -9,6 +10,9 @@ type MainController struct {
 }
 
 func (c *MainController) Get() {
+	openingThemes := theme.GetThemesByStatus(theme.ThemeStatusOpening)
+
+	c.Data["Themes"] = openingThemes
+
 	c.TplName = "main.html"
-	// c.Redirect("/dashboard/workbench", 302)
 }

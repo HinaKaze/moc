@@ -1,8 +1,6 @@
 package reserve
 
 import (
-	"time"
-
 	"github.com/astaxie/beego"
 
 	"strconv"
@@ -11,6 +9,7 @@ import (
 
 	"fmt"
 
+	"github.com/hinakaze/moc/common"
 	"github.com/hinakaze/moc/models/record"
 	"github.com/hinakaze/moc/models/reserve"
 	"github.com/hinakaze/moc/models/theme"
@@ -33,7 +32,7 @@ func (r *ThemeController) Post() {
 	}
 	beginTimeStr := strings.TrimSpace(r.GetString("begin_time"))
 
-	beginTime, err := time.ParseInLocation("2006-01-02 15:04:00", beginTimeStr, time.Local)
+	beginTime, err := common.ParseTime(beginTimeStr)
 	if err != nil {
 		r.Abort(err.Error())
 	}
@@ -47,14 +46,14 @@ func (r *ThemeController) Post() {
 	newReserveTheme.Theme.Id = themeId
 	reserve.InsertTheme(newReserveTheme)
 
-	r.Redirect("/", 302)
+	common.HandleSuccess(&r.Controller)
 }
 
 func (r *ThemeController) DoUpdate() {
 	reserveThemeIdStr := r.Ctx.Input.Param(":id")
 	reserveThemeId, err := strconv.ParseInt(reserveThemeIdStr, 10, 64)
 	if err != nil {
-		panic(err)
+		r.Abort(err.Error())
 	}
 	themeId, err := r.GetInt64("theme_id")
 	if err != nil {
@@ -68,7 +67,7 @@ func (r *ThemeController) DoUpdate() {
 	}
 	beginTimeStr := strings.TrimSpace(r.GetString("begin_time"))
 
-	beginTime, err := time.ParseInLocation("2006-01-02 15:04:00", beginTimeStr, time.Local)
+	beginTime, err := common.ParseTime(beginTimeStr)
 	if err != nil {
 		r.Abort(err.Error())
 	}
@@ -86,50 +85,50 @@ func (r *ThemeController) DoUpdate() {
 
 	reserve.UpdateTheme(reserveTheme)
 
-	r.Redirect("/", 302)
+	common.HandleSuccess(&r.Controller)
 }
 
 func (r *ThemeController) DoDelete() {
 	reserveThemeIdStr := r.Ctx.Input.Param(":id")
 	reserveThemeId, err := strconv.ParseInt(reserveThemeIdStr, 10, 64)
 	if err != nil {
-		panic(err)
+		r.Abort(err.Error())
 	}
 
 	reserveTheme, ok := reserve.GetTheme(reserveThemeId)
 	if !ok {
-		r.Abort("500")
+		r.Abort(fmt.Sprintf("Unkown reserve theme [%d]", reserveThemeId))
 	}
 	if reserveTheme.Status != reserve.ThemeStatusWaiting {
-		r.Abort("500")
+		r.Abort(fmt.Sprintf("Reserve theme [%d] is not in waiting", reserveThemeId))
 	}
 
 	reserveTheme.Status = reserve.ThemeStatusDeleted
 	reserve.UpdateTheme(reserveTheme)
 
-	r.Redirect("/", 302)
+	common.HandleSuccess(&r.Controller)
 }
 
 func (r *ThemeController) DoStart() {
 	reserveThemeIdStr := r.Ctx.Input.Param(":id")
 	reserveThemeId, err := strconv.ParseInt(reserveThemeIdStr, 10, 64)
 	if err != nil {
-		panic(err)
+		r.Abort(err.Error())
 	}
 
 	payType := r.GetString("pay_type")
 	payPrice, err := r.GetFloat("pay_price")
 	if err != nil {
-		panic(err)
+		r.Abort(err.Error())
 	}
 
 	reserveTheme, ok := reserve.GetTheme(reserveThemeId)
 	if !ok {
-		r.Redirect("/error", 500)
+		r.Abort(fmt.Sprintf("Unkown reserve theme [%d]", reserveThemeId))
 		return
 	}
 	if reserveTheme.Status != reserve.ThemeStatusWaiting {
-		r.Redirect("/error", 500)
+		r.Abort(fmt.Sprintf("Reserve theme [%d] is not in waiting", reserveThemeId))
 		return
 	}
 
@@ -141,5 +140,5 @@ func (r *ThemeController) DoStart() {
 	newRecordTheme := record.CreateTheme(reserveTheme, payType, payPrice)
 	record.InsertTheme(newRecordTheme)
 
-	r.Redirect("/", 302)
+	common.HandleSuccess(&r.Controller)
 }
