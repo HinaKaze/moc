@@ -8,7 +8,7 @@ import (
 
 func GetTheme(id int64) (*Theme, bool) {
 	t := new(Theme)
-	t.ID = id
+	t.Id = id
 	err := orm.NewOrm().Read(t)
 	if err != nil {
 		if err == orm.ErrNoRows {
@@ -22,7 +22,7 @@ func GetTheme(id int64) (*Theme, bool) {
 
 func InsertTheme(t *Theme) *Theme {
 	var err error
-	t.ID, err = orm.NewOrm().Insert(t)
+	t.Id, err = orm.NewOrm().Insert(t)
 	if err != nil {
 		panic(err)
 	}
@@ -31,7 +31,7 @@ func InsertTheme(t *Theme) *Theme {
 
 func InsertTimeRange(timeRange *TimeRange) *TimeRange {
 	var err error
-	timeRange.ID, err = orm.NewOrm().Insert(timeRange)
+	timeRange.Id, err = orm.NewOrm().Insert(timeRange)
 	if err != nil {
 		panic(err)
 	}
@@ -51,6 +51,19 @@ func GetThemesByStatus(status ThemeStatus) []Theme {
 	if err != nil {
 		panic(err)
 	}
+
 	log.Printf("GetThemesByStatus returned rows : %d ", num)
+	for index := range themes {
+		_, err = orm.NewOrm().LoadRelated(&themes[index], "Tips")
+		if err != nil {
+			panic(err.Error())
+		}
+
+		_, err = orm.NewOrm().LoadRelated(&themes[index], "TimeRange")
+		if err != nil {
+			panic(err.Error())
+		}
+	}
+
 	return themes
 }

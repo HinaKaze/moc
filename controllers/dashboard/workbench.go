@@ -39,7 +39,7 @@ func (c *WorkbenchController) Get() {
 		wtheme.Theme = &t
 		for j := range playingRecordThemes {
 			r := playingRecordThemes[j]
-			if r.Reserve.Theme.ID == wtheme.Theme.ID {
+			if r.Reserve.Theme.Id == wtheme.Theme.Id {
 				wtheme.Running = &r
 				break
 			}
@@ -52,14 +52,21 @@ func (c *WorkbenchController) Get() {
 			workbenchReserve := WorkbenchReserve{}
 			workbenchReserve.TimeRange = *timeRange
 
-			wtheme.Reserves = append(wtheme.Reserves, workbenchReserve)
 			for z := range todayReserveThemes {
 				r := todayReserveThemes[z]
-				if timeRange.From.Before(r.BeginTime) && timeRange.To.After(r.BeginTime) {
+				if r.Theme.Id != t.Id || r.Status == mreserve.ThemeStatusDeleted {
+					continue
+				}
+				fromNum := timeRange.From.Hour()*100 + timeRange.From.Minute()
+				toNum := timeRange.To.Hour()*100 + timeRange.To.Minute()
+				rNum := r.BeginTime.Hour()*100 + r.BeginTime.Minute()
+				if fromNum <= rNum && rNum <= toNum {
 					workbenchReserve.Reserve = &r
+					wtheme.Reserves = append(wtheme.Reserves, workbenchReserve)
 					continue LOOP_TIMERANGE
 				}
 			}
+			wtheme.Reserves = append(wtheme.Reserves, workbenchReserve)
 		}
 		workbenchThemes = append(workbenchThemes, wtheme)
 	}

@@ -1,7 +1,7 @@
 package theme
 
 type Tip struct {
-	ID    int64
+	Id    int64
 	Theme *Theme `orm:"rel(fk)"`
 	Stage string //阶段信息
 	Desc  string //提示说明

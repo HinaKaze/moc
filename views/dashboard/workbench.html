@@ -6,8 +6,12 @@
                 theme.Running.timestr = ""
             }
             for (reserve of theme.Reserves) {
-                reserve.timestr = ""
-                reserve.BeginTime = moc.formatTime(reserve.BeginTime)
+                reserve.TimeRange.From = moc.formatTimeRange(reserve.TimeRange.From)
+                reserve.TimeRange.To = moc.formatTimeRange(reserve.TimeRange.To)
+                if (reserve.Reserve){
+                    reserve.Reserve.timestr = ""
+                    reserve.Reserve.BeginTime = moc.formatTime(reserve.Reserve.BeginTime)
+                }
             }
         }
 
@@ -66,8 +70,8 @@
                     OUTER:
                     for (theme of this.themes) {
                         for (reserve of theme.Reserves) {
-                            if (reserve.Id == reserveThemeId) {
-                                this.reserveForm.id = reserve.Id
+                            if (reserve.Reserve.Id == reserveThemeId) {
+                                this.reserveForm.id = reserve.Reserve.Id
                                 this.reserveForm.themeId = reserve.Theme.Id
                                 this.reserveForm.teamName = reserve.TeamName
                                 this.reserveForm.beginTime = reserve.BeginTime
@@ -212,14 +216,15 @@
             <div>饥渴地等待小伙伴...</div>
         </div>
         <div class="dashboard-workbench-theme-reserves-container">
-            <div class="dashboard-workbench-theme-reserves" v-if="theme.Reserves">
+            <div class="dashboard-workbench-theme-reserves" v-for="reserve of theme.Reserves" >
+                <div class="dashboard-workbench-theme-reserve">
                 <div>${ reserve.TimeRange.From} - ${ reserve.TimeRange.To}</div>
-                <div v-if="reserve.Reserve != NULL" class="dashboard-workbench-theme-reserve" v-for="reserve of theme.Reserves" v-bind:reserve-theme-id="reserve.Reserve.Id">
+                <div v-if="reserve.Reserve" v-bind:reserve-theme-id="reserve.Reserve.Id">
                     <h3>预约中
                         <button v-on:click="editReserve" class="btn btn-sm btn-outline-info">E</button>
                         <button v-on:click="deleteReserve" class="btn btn-sm btn-outline-danger">X</button>
                     </h3>
-                    <table>
+                    <table >
                         <tr>
                             <th>小队名称:</td>
                                 <td>${ reserve.Reserve.TeamName }</td>
@@ -257,6 +262,7 @@
                         </div>
                     </div>-->
                 </div>
+            </div>
             </div>
         </div>
     </div>

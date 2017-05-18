@@ -10,7 +10,7 @@ const (
 )
 
 type Theme struct {
-	ID           int64
+	Id           int64
 	Title        string //主题名称
 	Desc         string //主题说明
 	MinMember    int    //最小参与人数
