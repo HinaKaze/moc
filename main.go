@@ -36,7 +36,7 @@ func main() {
 	orm.RegisterDataBase("default", driverName, dataSource)
 	orm.DefaultTimeLoc = time.Local
 
-	orm.RegisterModel(new(theme.Theme), new(reserve.Theme), new(record.Theme))
+	orm.RegisterModel(new(theme.Theme), new(reserve.Theme), new(record.Theme), new(theme.Tip), new(theme.TimeRange))
 
 	//beego.BConfig.WebConfig.Session.SessionProvider = "memory"
 	beego.Run()

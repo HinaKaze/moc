@@ -10,13 +10,15 @@ const (
 )
 
 type Theme struct {
-	Id           int64
+	ID           int64
 	Title        string //主题名称
 	Desc         string //主题说明
 	MinMember    int    //最小参与人数
 	MaxMember    int    //最大参与人数
 	PlayDuration int    //规定游玩时长 seconds
 	Status       ThemeStatus
+	Tips         []*Tip       `orm:"reverse(many)"`
+	TimeRange    []*TimeRange `orm:"reverse(many)"`
 }
 
 func (t *Theme) TableName() string {

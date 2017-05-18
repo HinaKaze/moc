@@ -6,11 +6,11 @@ import (
 	"github.com/astaxie/beego"
 )
 
-var timeLocation *time.Location
+var TimeLocation *time.Location
 
 func init() {
 	var err error
-	timeLocation, err = time.LoadLocation("Asia/Shanghai")
+	TimeLocation, err = time.LoadLocation("Asia/Shanghai")
 	if err != nil {
 		panic(err)
 	}
@@ -23,7 +23,7 @@ func FormatTime(time time.Time) string {
 
 //ParseTime 解析string to time.Time
 func ParseTime(str string) (time.Time, error) {
-	return time.ParseInLocation("2006-01-02 15:04:05", str, timeLocation)
+	return time.ParseInLocation("2006-01-02 15:04:05", str, TimeLocation)
 }
 
 func HandleSuccess(r *beego.Controller) {

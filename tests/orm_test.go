@@ -33,17 +33,18 @@ func TestMain(m *testing.M) {
 	orm.RegisterDataBase("default", driverName, dataSource)
 	orm.DefaultTimeLoc = time.Local
 
+	orm.RegisterModel(new(theme.Theme), new(reserve.Theme), new(record.Theme), new(theme.Tip), new(theme.TimeRange))
+
 	m.Run()
 }
 
 func TestCreateModels(t *testing.T) {
-	orm.RegisterModel(new(theme.Theme), new(reserve.Theme), new(record.Theme))
 	orm.RunSyncdb("default", false, true)
 }
 
 func TestInsertThemeData(t *testing.T) {
 	fakeTheme1 := new(theme.Theme)
-	fakeTheme1.Title = "星际穿越"
+	fakeTheme1.Title = "星际救援"
 	fakeTheme1.Desc = "一次去了就回不来的星际旅行"
 	fakeTheme1.MinMember = 2
 	fakeTheme1.MaxMember = 6
@@ -58,8 +59,31 @@ func TestInsertThemeData(t *testing.T) {
 	fakeTheme2.PlayDuration = 3600
 	fakeTheme2.Status = theme.ThemeStatusOpening
 
+	fakeTheme3 := new(theme.Theme)
+	fakeTheme3.Title = "咒怨2"
+	fakeTheme3.Desc = "也就少条腿什么的"
+	fakeTheme3.MinMember = 4
+	fakeTheme3.MaxMember = 10
+	fakeTheme3.PlayDuration = 3600
+	fakeTheme3.Status = theme.ThemeStatusOpening
+
 	theme.InsertTheme(fakeTheme1)
 	theme.InsertTheme(fakeTheme2)
+	theme.InsertTheme(fakeTheme3)
+}
+
+func TestInsertThemeTimeRange(t *testing.T) {
+	now := time.Now()
+	themes := theme.GetThemesByStatus(theme.ThemeStatusOpening)
+	for _, t := range themes {
+		for i := 10; i <= 20; i++ {
+			fakeTimeRange := new(theme.TimeRange)
+			fakeTimeRange.Theme = &t
+			fakeTimeRange.From = time.Date(now.Year(), now.Month(), now.Day(), i, 10, 0, 0, time.Local)
+			fakeTimeRange.To = time.Date(now.Year(), now.Month(), now.Day(), i+1, 9, 0, 0, time.Local)
+			theme.InsertTimeRange(fakeTimeRange)
+		}
+	}
 }
 
 func TestInsertReserveData(t *testing.T) {

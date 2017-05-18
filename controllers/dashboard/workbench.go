@@ -1,7 +1,10 @@
 package dashboard
 
 import (
+	"time"
+
 	"github.com/astaxie/beego"
+	"github.com/hinakaze/moc/common"
 	mrecord "github.com/hinakaze/moc/models/record"
 	mreserve "github.com/hinakaze/moc/models/reserve"
 	mtheme "github.com/hinakaze/moc/models/theme"
@@ -14,7 +17,12 @@ type WorkbenchController struct {
 type WorkbenchTheme struct {
 	Theme    *mtheme.Theme
 	Running  *mrecord.Theme
-	Reserves []*mreserve.Theme
+	Reserves []WorkbenchReserve
+}
+
+type WorkbenchReserve struct {
+	TimeRange mtheme.TimeRange
+	Reserve   *mreserve.Theme
 }
 
 func (c *WorkbenchController) Get() {
@@ -22,7 +30,7 @@ func (c *WorkbenchController) Get() {
 	playingRecordThemes := mrecord.GetThemesByStatus(mrecord.ThemeStatusPlaying)
 
 	//TODO reserve maybe filtered by time
-	waitingReserveThemes := mreserve.GetThemesByStatus(mreserve.ThemeStatusWaiting)
+	todayReserveThemes := mreserve.GetOneDayThemes(time.Now())
 
 	workbenchThemes := make([]*WorkbenchTheme, 0)
 	for i := range openingThemes {
@@ -31,16 +39,26 @@ func (c *WorkbenchController) Get() {
 		wtheme.Theme = &t
 		for j := range playingRecordThemes {
 			r := playingRecordThemes[j]
-			if r.Reserve.Theme.Id == wtheme.Theme.Id {
+			if r.Reserve.Theme.ID == wtheme.Theme.ID {
 				wtheme.Running = &r
 				break
 			}
 		}
-		wtheme.Reserves = make([]*mreserve.Theme, 0)
-		for j := range waitingReserveThemes {
-			r := waitingReserveThemes[j]
-			if r.Theme.Id == wtheme.Theme.Id {
-				wtheme.Reserves = append(wtheme.Reserves, &r)
+		wtheme.Reserves = make([]WorkbenchReserve, 0)
+
+	LOOP_TIMERANGE:
+		for j := range wtheme.Theme.TimeRange {
+			timeRange := wtheme.Theme.TimeRange[j]
+			workbenchReserve := WorkbenchReserve{}
+			workbenchReserve.TimeRange = *timeRange
+
+			wtheme.Reserves = append(wtheme.Reserves, workbenchReserve)
+			for z := range todayReserveThemes {
+				r := todayReserveThemes[z]
+				if timeRange.From.Before(r.BeginTime) && timeRange.To.After(r.BeginTime) {
+					workbenchReserve.Reserve = &r
+					continue LOOP_TIMERANGE
+				}
 			}
 		}
 		workbenchThemes = append(workbenchThemes, wtheme)
@@ -48,4 +66,23 @@ func (c *WorkbenchController) Get() {
 
 	c.Data["Themes"] = workbenchThemes
 	c.TplName = "dashboard/workbench.html"
+}
+
+func (r *WorkbenchController) GetReserveHistory() {
+	fromTimeStr := r.GetString("from")
+	toTimeStr := r.GetString("to")
+
+	fromTime, err := common.ParseTime(fromTimeStr)
+	if err != nil {
+		r.Abort(err.Error())
+	}
+	toTime, err := common.ParseTime(toTimeStr)
+	if err != nil {
+		r.Abort(err.Error())
+	}
+
+	themes := mreserve.GetHistoryThemes(fromTime, toTime)
+
+	r.Data["Themes"] = themes
+	r.TplName = "dashboard/history.html"
 }

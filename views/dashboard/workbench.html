@@ -45,7 +45,7 @@
                 submitReserveForm: function (event) {
                     moc.toggleLoading(true)
                     if (this.reserveForm.newFlag) {
-                        $.post("/reserve/theme", $(event.target).serialize(), function (data, status) {
+                        $.post("/reserve/themes", $(event.target).serialize(), function (data, status) {
                             $.get("/dashboard/workbench", function (data, status) {
                                 $("#main-content").html(data);
                                 moc.toggleLoading(false)
@@ -213,7 +213,8 @@
         </div>
         <div class="dashboard-workbench-theme-reserves-container">
             <div class="dashboard-workbench-theme-reserves" v-if="theme.Reserves">
-                <div class="dashboard-workbench-theme-reserve" v-for="reserve of theme.Reserves" v-bind:reserve-theme-id="reserve.Id">
+                <div>${ reserve.TimeRange.From} - ${ reserve.TimeRange.To}</div>
+                <div v-if="reserve.Reserve != NULL" class="dashboard-workbench-theme-reserve" v-for="reserve of theme.Reserves" v-bind:reserve-theme-id="reserve.Reserve.Id">
                     <h3>预约中
                         <button v-on:click="editReserve" class="btn btn-sm btn-outline-info">E</button>
                         <button v-on:click="deleteReserve" class="btn btn-sm btn-outline-danger">X</button>
@@ -221,24 +222,24 @@
                     <table>
                         <tr>
                             <th>小队名称:</td>
-                                <td>${ reserve.TeamName }</td>
+                                <td>${ reserve.Reserve.TeamName }</td>
                         </tr>
                         <tr>
                             <th>开始时间:</td>
-                                <td class="timer">${ reserve.timestr }</td>
+                                <td class="timer">${ reserve.Reserve.timestr }</td>
                         </tr>
                         <tr>
                             <th>游玩人数:</td>
-                                <td>${ reserve.MemberCount }</td>
+                                <td>${ reserve.Reserve.MemberCount }</td>
                         </tr>
                         <tr>
                             <th>联系电话:</td>
-                                <td>${ reserve.PhoneNumber }</td>
+                                <td>${ reserve.Reserve.PhoneNumber }</td>
                                 <!--<td>${ theme.Running.BeginTime }</td>-->
                         </tr>
                     </table>
                     <button v-on:click="startReserve" class="btn btn-sm btn-outline-primary"> start </button>
-                    <div style="display:inline;">
+                    <!--<div style="display:inline;">
                         <button v-on:click="toggleReservePay" class="btn btn-sm btn-outline-primary">pay</button>
                         <div v-if="showReservePayFlag" class="dashboard-workbench-theme-reserve-pay-popup">
                             <div>
@@ -254,7 +255,7 @@
                             </div>
                             <button class="btn btn-primary">确认</button>
                         </div>
-                    </div>
+                    </div>-->
                 </div>
             </div>
         </div>

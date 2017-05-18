@@ -43,7 +43,7 @@ func (r *ThemeController) Post() {
 	newReserveTheme.MemberCount = memberCount
 	newReserveTheme.BeginTime = beginTime
 	newReserveTheme.Theme = new(theme.Theme)
-	newReserveTheme.Theme.Id = themeId
+	newReserveTheme.Theme.ID = themeId
 	reserve.InsertTheme(newReserveTheme)
 
 	common.HandleSuccess(&r.Controller)
@@ -81,7 +81,7 @@ func (r *ThemeController) DoUpdate() {
 	reserveTheme.PhoneNumber = phoneNumber
 	reserveTheme.MemberCount = memberCount
 	reserveTheme.BeginTime = beginTime
-	reserveTheme.Theme.Id = themeId
+	reserveTheme.Theme.ID = themeId
 
 	reserve.UpdateTheme(reserveTheme)
 
