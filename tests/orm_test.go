@@ -102,3 +102,16 @@ func TestInsertReserveData(t *testing.T) {
 		}
 	}
 }
+
+func TestInsertTipData(t *testing.T) {
+	themes := theme.GetThemesByStatus(theme.ThemeStatusOpening)
+	for _, t := range themes {
+		for i := 1; i <= 3; i++ {
+			fakeTip := new(theme.Tip)
+			fakeTip.Theme = &t
+			fakeTip.Stage = fmt.Sprintf("Stage:%d", i)
+			fakeTip.Desc = "自己想！你有脑子吗"
+			theme.InsertTip(fakeTip)
+		}
+	}
+}

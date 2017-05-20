@@ -9,19 +9,21 @@ import (
 type ThemeStatus byte
 
 const (
-	ThemeStatusWaiting   ThemeStatus = iota //预约中，等待开始
-	ThemeStatusConverted                    //正常开始，并转换成为一个Record
-	ThemeStatusExpired                      //过期但没来玩
-	ThemeStatusDeleted                      //手动删除
+	ThemeStatusWaiting ThemeStatus = iota //预约中，等待开始
+	ThemeStatusStarted                    //已经开始游戏
+	ThemeStatusDeleted                    //手动删除
 )
 
 type Theme struct {
 	Id          int64
+	BeginTime   time.Time
 	Theme       *theme.Theme `orm:"rel(fk)"`
 	TeamName    string       //小队名称
-	BeginTime   time.Time    //游玩开始时间
 	MemberCount int          //小队人数
 	PhoneNumber string       //联系电话
+
+	PayType  string  //支付类型
+	PayPrice float64 //支付总金额
 
 	Status ThemeStatus
 }

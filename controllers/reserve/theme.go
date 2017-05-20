@@ -37,6 +37,16 @@ func (r *ThemeController) Post() {
 		r.Abort(err.Error())
 	}
 
+	payType := r.GetString("pay_type")
+	payPrice, err := r.GetFloat("pay_price")
+	if err != nil {
+		if payType == "未支付" {
+			payPrice = 0.0
+		} else {
+			r.Abort(err.Error())
+		}
+	}
+
 	newReserveTheme := new(reserve.Theme)
 	newReserveTheme.TeamName = teamName
 	newReserveTheme.PhoneNumber = phoneNumber
@@ -44,6 +54,8 @@ func (r *ThemeController) Post() {
 	newReserveTheme.BeginTime = beginTime
 	newReserveTheme.Theme = new(theme.Theme)
 	newReserveTheme.Theme.Id = themeId
+	newReserveTheme.PayType = payType
+	newReserveTheme.PayPrice = payPrice
 	reserve.InsertTheme(newReserveTheme)
 
 	common.HandleSuccess(&r.Controller)
@@ -77,11 +89,23 @@ func (r *ThemeController) DoUpdate() {
 		r.Abort(fmt.Sprintf("Can't find reserve theme [%d]", reserveThemeId))
 	}
 
+	payType := r.GetString("pay_type")
+	payPrice, err := r.GetFloat("pay_price")
+	if err != nil {
+		if payType == "未支付" {
+			payPrice = 0.0
+		} else {
+			r.Abort(err.Error())
+		}
+	}
+
 	reserveTheme.TeamName = teamName
 	reserveTheme.PhoneNumber = phoneNumber
 	reserveTheme.MemberCount = memberCount
 	reserveTheme.BeginTime = beginTime
 	reserveTheme.Theme.Id = themeId
+	reserveTheme.PayType = payType
+	reserveTheme.PayPrice = payPrice
 
 	reserve.UpdateTheme(reserveTheme)
 
@@ -116,28 +140,24 @@ func (r *ThemeController) DoStart() {
 		r.Abort(err.Error())
 	}
 
-	payType := r.GetString("pay_type")
-	payPrice, err := r.GetFloat("pay_price")
-	if err != nil {
-		r.Abort(err.Error())
-	}
-
 	reserveTheme, ok := reserve.GetTheme(reserveThemeId)
 	if !ok {
 		r.Abort(fmt.Sprintf("Unkown reserve theme [%d]", reserveThemeId))
-		return
+	}
+
+	if reserveTheme.PayType == "未支付" {
+		r.Abort(fmt.Sprintf("Reserve theme [%d] not payed", reserveThemeId))
 	}
 	if reserveTheme.Status != reserve.ThemeStatusWaiting {
 		r.Abort(fmt.Sprintf("Reserve theme [%d] is not in waiting", reserveThemeId))
-		return
 	}
 
 	//update reserve
-	reserveTheme.Status = reserve.ThemeStatusConverted
+	reserveTheme.Status = reserve.ThemeStatusStarted
 	reserve.UpdateTheme(reserveTheme)
 
 	//create new record
-	newRecordTheme := record.CreateTheme(reserveTheme, payType, payPrice)
+	newRecordTheme := record.CreateTheme(reserveTheme, reserveTheme.PayType, reserveTheme.PayPrice)
 	record.InsertTheme(newRecordTheme)
 
 	common.HandleSuccess(&r.Controller)

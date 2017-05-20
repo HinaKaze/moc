@@ -13,12 +13,11 @@ func init() {
 	beego.Router("/", &controller.MainController{})
 
 	beego.Router("/dashboard/workbench", &dashboard.WorkbenchController{})
-	// beego.Router("/dashboard/reserve/history", &dashboard.WorkbenchController{}, "get:GetReserveHistory")
+	beego.Router("/dashboard/history", &dashboard.WorkbenchController{}, "get:GetReserveHistory")
 
 	beego.Router("/theme/:id/rank", &theme.RankController{}, "get:GetRank")
 
 	beego.Router("/reserve/themes", &reserve.ThemeController{}, "post:Post")
-	// beego.Router("/reserve/themes", &reserve.ThemeController{}, "get:GetHistory")
 	beego.Router("/reserve/theme/:id/start", &reserve.ThemeController{}, "get:DoStart")
 	beego.Router("/reserve/theme/:id/update", &reserve.ThemeController{}, "post:DoUpdate")
 	beego.Router("/reserve/theme/:id/delete", &reserve.ThemeController{}, "get:DoDelete")

@@ -76,20 +76,47 @@ func (c *WorkbenchController) Get() {
 }
 
 func (r *WorkbenchController) GetReserveHistory() {
-	fromTimeStr := r.GetString("from")
-	toTimeStr := r.GetString("to")
+	timeStr := r.GetString("time")
 
-	fromTime, err := common.ParseTime(fromTimeStr)
-	if err != nil {
-		r.Abort(err.Error())
-	}
-	toTime, err := common.ParseTime(toTimeStr)
+	dayTime, err := common.ParseTime(timeStr)
 	if err != nil {
 		r.Abort(err.Error())
 	}
 
-	themes := mreserve.GetHistoryThemes(fromTime, toTime)
+	openingThemes := mtheme.GetThemesByStatus(mtheme.ThemeStatusOpening)
+	dayReserveThemes := mreserve.GetOneDayThemes(dayTime)
 
-	r.Data["Themes"] = themes
+	workbenchThemes := make([]*WorkbenchTheme, 0)
+	for i := range openingThemes {
+		t := openingThemes[i]
+		wtheme := new(WorkbenchTheme)
+		wtheme.Theme = &t
+		wtheme.Reserves = make([]WorkbenchReserve, 0)
+
+	LOOP_TIMERANGE:
+		for j := range wtheme.Theme.TimeRange {
+			timeRange := wtheme.Theme.TimeRange[j]
+			workbenchReserve := WorkbenchReserve{}
+			workbenchReserve.TimeRange = *timeRange
+
+			for z := range dayReserveThemes {
+				r := dayReserveThemes[z]
+				if r.Theme.Id != t.Id || r.Status == mreserve.ThemeStatusDeleted {
+					continue
+				}
+				fromNum := timeRange.From.Hour()*100 + timeRange.From.Minute()
+				toNum := timeRange.To.Hour()*100 + timeRange.To.Minute()
+				rNum := r.BeginTime.Hour()*100 + r.BeginTime.Minute()
+				if fromNum <= rNum && rNum <= toNum {
+					workbenchReserve.Reserve = &r
+					wtheme.Reserves = append(wtheme.Reserves, workbenchReserve)
+					continue LOOP_TIMERANGE
+				}
+			}
+			wtheme.Reserves = append(wtheme.Reserves, workbenchReserve)
+		}
+		workbenchThemes = append(workbenchThemes, wtheme)
+	}
+	r.Data["Themes"] = workbenchThemes
 	r.TplName = "dashboard/history.html"
 }

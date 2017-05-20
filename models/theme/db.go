@@ -29,6 +29,15 @@ func InsertTheme(t *Theme) *Theme {
 	return t
 }
 
+func InsertTip(t *Tip) *Tip {
+	var err error
+	t.Id, err = orm.NewOrm().Insert(t)
+	if err != nil {
+		panic(err)
+	}
+	return t
+}
+
 func InsertTimeRange(timeRange *TimeRange) *TimeRange {
 	var err error
 	timeRange.Id, err = orm.NewOrm().Insert(timeRange)
