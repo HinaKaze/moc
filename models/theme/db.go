@@ -6,6 +6,12 @@ import (
 	"github.com/astaxie/beego/orm"
 )
 
+var openningThemes []Theme
+
+func init() {
+	openningThemes = make([]Theme, 0)
+}
+
 func GetTheme(id int64) (*Theme, bool) {
 	t := new(Theme)
 	t.Id = id
@@ -55,24 +61,29 @@ func UpdateTheme(t *Theme) {
 }
 
 func GetThemesByStatus(status ThemeStatus) []Theme {
+	//ADD CACHE
 	themes := make([]Theme, 0)
-	num, err := orm.NewOrm().QueryTable(new(Theme).TableName()).Filter("status", status).All(&themes)
-	if err != nil {
-		panic(err)
-	}
-
-	log.Printf("GetThemesByStatus returned rows : %d ", num)
-	for index := range themes {
-		_, err = orm.NewOrm().LoadRelated(&themes[index], "Tips")
+	if len(openningThemes) <= 0 {
+		num, err := orm.NewOrm().QueryTable(new(Theme).TableName()).Filter("status", status).All(&themes)
 		if err != nil {
-			panic(err.Error())
+			panic(err)
 		}
 
-		_, err = orm.NewOrm().LoadRelated(&themes[index], "TimeRange")
-		if err != nil {
-			panic(err.Error())
-		}
-	}
+		log.Printf("GetThemesByStatus returned rows : %d ", num)
+		for index := range themes {
+			_, err = orm.NewOrm().LoadRelated(&themes[index], "Tips")
+			if err != nil {
+				panic(err.Error())
+			}
 
+			_, err = orm.NewOrm().LoadRelated(&themes[index], "TimeRange")
+			if err != nil {
+				panic(err.Error())
+			}
+		}
+		openningThemes = themes
+	} else {
+		themes = openningThemes
+	}
 	return themes
 }
